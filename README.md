@@ -23,7 +23,7 @@ git checkout -b dev origin/dev
 **Daily**
 ```bash
 git checkout dev && git pull
-git checkout -b feature/<task>
+git checkout feature/<task>
 # work...
 git add . && git commit -m "feat: <msg>"
 git push -u origin feature/<task>
