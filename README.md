@@ -1,30 +1,55 @@
 # wad2-magical-survival-game
 
 ## Git Workflow (Team)
+We use a simple workflow so nobody breaks `dev` or `main`.
 
-**Branches**
+### Branches
 - `main` = stable / demo-ready
 - `dev` = team integration
-- `feature/*` = each task (e.g. `feature/login`)
+- `feature/*` = each task (e.g. `feature/auth`)
 
-**Repo owner (once)**
+## First time setup (do once)
+
+### 1. Clone the repo and enter it:
 ```bash
-git checkout main && git pull
-git checkout -b dev
-git push -u origin dev
+git clone <REPO_URL>
+cd wad2-magical-survival-game
 ```
 
-**Everyone (once)**
+### 2. Get the latest dev branch locally:
 ```bash
 git fetch origin
 git checkout -b dev origin/dev
 ```
 
-**Daily**
+## Starting a new task (every time)
+### 1. Make sure your dev is up to date:
 ```bash
-git checkout dev && git pull
-git checkout feature/<task>
-# work...
-git add . && git commit -m "feat: <msg>"
+git checkout dev
+git pull
+```
+
+### 2. Create your feature branch:
+**First time (create the branch):**
+```bash
+git checkout -b feature/<task>
 git push -u origin feature/<task>
 ```
+
+**Next time (branch already exists, just switch):**
+```bash
+git checkout feature/<task>
+git pull
+```
+
+### 3. Work normally, commit, and push:
+```bash
+git add -A
+git commit -m "feat: <what you changed>"
+git push
+```
+
+## Open a Pull Request back into dve on GitHub when it's ready:
+- base: dev
+- compare: feature/<task>
+
