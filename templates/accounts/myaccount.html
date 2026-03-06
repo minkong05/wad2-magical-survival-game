@@ -1,12 +1,29 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}My Account{% endblock %}
 
 {% block content %}
 <section>
-  <h1>This is our Myaccount pages</h1>
-  <p>
-    this page will show all the data of the user
-  </p>
+  
+<h1><b>My Account </b></h1>
+ <h2><u> (User username) </u></h2>
+ 
+  <img src="{% static 'img/test.jpg' %}" alt="testing profile picture" width="300">
+
+  <ul> 
+
+    <li> Level: ( User level ) </li>
+    <li> Recent Quests: ( The last two or three quests completed ) </li> 
+    <li> HP: ( Current uer hp ) </li> 
+
+  </ul> <br> 
+
+  <h2><b> Skills Learned: </b></h2> 
+   <ul> 
+   <li> ( User skill ) </li> 
+   <li> ( Another user skill ) </li> 
+   <li> ( Third user skill ) </li>
+   </ul>
 
 
 </section>
