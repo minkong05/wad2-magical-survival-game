@@ -1,16 +1,92 @@
-{% extends "base.html" %}
-{% block title %}Main{% endblock %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Main Game{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main.css' %}">
+{% endblock %}
 
 {% block content %}
-<section>
-  <h1>This is our Main pages</h1>
-  <p>
-    The Main page acts as the player’s central hub after logging in
-  </p>
+
+<div class="container-fluid main-container">
+
+    
+    <div class="row top-bar align-items-center">
+        <div class="col-md-6">
+            <h4 class="level-title">
+                Level {{ player.current_level|default:"1" }}
+            </h4>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'home' %}" class="btn btn-outline-dark btn-sm">Home</a>
+            <a href="{% url 'logout' %}" class="btn btn-outline-dark btn-sm">Log Out</a>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-md-3 left-panel">
+
+            <div class="enemy-section text-center">
+                <img src="{% static 'images/skull.png' %}" 
+                     class="img-fluid enemy-img" 
+                     alt="Enemy">
+            </div>
+
+            <div class="player-hp mt-4">
+                <label>HP</label>
+                <div class="progress">
+                    <div id="playerHpBar"
+                        class="progress-bar bg-danger"
+                        role="progressbar"
+                        data-hp="{{ player.hp_percent|default:100 }}">
+                    </div>
+                </div>
+            </div>
+
+        </div>
 
 
-</section>
+        <div class="col-md-6 center-panel">
 
-<hr>
+            <div class="battle-area text-center">
+                <div class="battle-placeholder">
+                </div>
+            </div>
 
+            <div class="battle-log mt-3" id="battleLog">
+            </div>
+
+        </div>
+
+
+      
+        <div class="col-md-3 right-panel">
+
+            <div class="player-info text-center">
+                <img src="{% static 'images/knight.png' %}" 
+                     class="img-fluid hero-img" 
+                     alt="Hero">
+                <h5 class="mt-2">{{ player.username|default:"Hero" }}</h5>
+            </div>
+
+            <div class="action-buttons mt-4 d-grid gap-2">
+                <button id="fightBtn" class="btn btn-danger">Fight!</button>
+                <button id="friendBtn" class="btn btn-success">Friend</button>
+                <button id="magicBtn" class="btn btn-primary">Magic</button>
+                <button id="itemBtn" class="btn btn-warning">Item</button>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/main.js' %}"></script>
 {% endblock %}
