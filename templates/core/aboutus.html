@@ -1,16 +1,55 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}About Us{% endblock %}
+
 
 {% block content %}
 <section>
-  <h1>This is our AboutUs pages</h1>
+  <h1>About Magical Survival Game</h1>
   <p>
-    Team 6B
+    Magical Survival Game is a browser-based fantasy RPG where players explore a magical world and battle increasingly dangerous enemies. 
+    Players choose a character class (Mage or Swordsman) 
+    and use a mix of combat skills, magic, and items to survive encounters across multiple levels, 
+    from early foes such as Skulls to the final boss, the Dragon. 
+    Along the way, players can explore to earn coins, 
+    meet friends/NPCs who provide helpful abilities (such as healing or learning spells), 
+    and visit a shop to buy weapons, armour, 
+    and potions. Each player’s progress is saved to their account so they can return and continue their journey, 
+    and the game is won when the Dragon is defeated.
   </p>
-
-
 </section>
 
-<hr>
+<section>
+  <h2>What you can do</h2>
+  <ul>
+    <li>Create an account and log in to save your progress.</li>
+    <li>Fight enemies using standard attacks, magic skills, and items.</li>
+    <li>Earn coins through battles, missions, and exploration.</li>
+    <li>Visit the Shop to buy weapons, armour, and potions.</li>
+    <li>Recruit Friends (Phoenix, Shooter, Fairy, Hulk) for special abilities.</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Team 6B</h2>
+  <p>We are a WAD2 group team building this project as part of our coursework.</p>
+  <img src="{% static 'img/test.jpg' %}" alt="testing image" width="300">
+  <ul>
+    <li><strong>Kong Yu Min</strong></li>
+    <li><strong>Aman Iqbal Noreen</strong></li>
+    <li><strong>Isaac Wilson</strong></li>
+    <li><strong>Toluwani David Ashiru</strong></li>
+    <li><strong>Yuxuan Song</strong></li>
+  </ul>
+</section>
+
+<section>
+  <h2>Tech</h2>
+  <ul>
+    <li>Django + Python</li>
+    <li>HTML/CSS/JavaScript</li>
+  </ul>
+</section>
+
 
 {% endblock %}
