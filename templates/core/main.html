@@ -8,14 +8,12 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="container-fluid main-container">
 
-    
     <div class="row top-bar align-items-center">
         <div class="col-md-6">
             <h4 class="level-title">
-                Level {{ player.current_level|default:"1" }}
+                Level {{ player.level|default:"1" }}
             </h4>
         </div>
         <div class="col-md-6 text-end">
@@ -27,66 +25,56 @@
     <div class="row mt-4">
 
         <div class="col-md-3 left-panel">
-
             <div class="enemy-section text-center">
                 <img src="{% static 'images/skull.png' %}" 
                      class="img-fluid enemy-img" 
                      alt="Enemy">
+                <h5 class="mt-2">Enemy</h5>
             </div>
 
-            <div class="player-hp mt-4">
-                <label>HP</label>
+            <div class="enemy-hp mt-4 text-center">
+                <label class="fw-bold">HP</label>
                 <div class="progress">
-                    <div id="playerHpBar"
+                    <div id="enemyHpBar"
                         class="progress-bar bg-danger"
                         role="progressbar"
-                        data-hp="{{ player.hp_percent|default:100 }}">
+                        data-hp="{{ enemy_hp_percent }}">
                     </div>
                 </div>
             </div>
-
         </div>
-
 
         <div class="col-md-6 center-panel">
-
-            <div class="battle-area text-center">
-                <div class="battle-placeholder">
-                </div>
+            <div id="battleLog" class="mt-2">
+                <h5 class="fw-bold" style="border-bottom: 2px dashed #7A5C23; padding-bottom: 10px; margin-bottom: 15px;">
+                    Text box
+                </h5>
+        
+                <p class="mt-3">Welcome to the game...</p>
+                <p>You are a hero...</p>
+                <br>
+                <p class="text-center">(story).</p>
             </div>
-
-            <div class="battle-log mt-3" id="battleLog">
-            </div>
-
         </div>
-
-
       
         <div class="col-md-3 right-panel">
-
             <div class="player-info text-center">
                 <img src="{% static 'images/knight.png' %}" 
                      class="img-fluid hero-img" 
                      alt="Hero">
-                <h5 class="mt-2">{{ player.username|default:"Hero" }}</h5>
+                <h5 class="mt-2">Hero</h5>
+                
+                <p class="fw-bold mt-2" id="heroHpText">HP: {{ player.hp|default:100 }}</p>
             </div>
 
             <div class="action-buttons mt-4 d-grid gap-2">
-                <button id="fightBtn" class="btn btn-danger">Fight!</button>
+                <button id="fightBtn" class="btn btn-danger">Fight</button>
                 <button id="friendBtn" class="btn btn-success">Friend</button>
                 <button id="magicBtn" class="btn btn-primary">Magic</button>
                 <button id="itemBtn" class="btn btn-warning">Item</button>
             </div>
-
         </div>
 
     </div>
-
 </div>
-
-{% endblock %}
-
-
-{% block extra_js %}
-<script src="{% static 'js/main.js' %}"></script>
 {% endblock %}

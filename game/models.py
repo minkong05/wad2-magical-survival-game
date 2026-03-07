@@ -25,9 +25,6 @@ class EnemyType(models.Model):
     damage = models.PositiveIntegerField(default=1)
     reward_coins = models.PositiveIntegerField(default=0)
     is_boss = models.BooleanField(default=False)
-    
-    can_revive = models.BooleanField(default=False)
-    drops_item = models.ForeignKey('Item', on_delete=models.SET_NULL, null=True, blank=True, related_name='dropped_by')
 
     def __str__(self):
         return self.name
@@ -113,4 +110,5 @@ class Encounter(models.Model):
 
     def __str__(self):
         return f"{self.player.user.username} vs {self.enemy_type.name} ({self.status})"
+
 
