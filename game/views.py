@@ -4,6 +4,7 @@ import random
 import json  
 from .models import PlayerProfile, Encounter, InventoryItem
 from django.shortcuts import render
+from django.shortcuts import redirect
 
 
 def main(request):
@@ -100,3 +101,17 @@ def perform_attack(request):
         })
     
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+def restart_game(request):
+    player = request.user.playerprofile
+    
+    player.hp = 100  
+    
+    player.coins = int(player.coins * 0.8) 
+    player.save()
+    
+   
+    player.encounters.filter(status__in=["ACTIVE", "LOST"]).delete()
+    
+    
+    return redirect('main')

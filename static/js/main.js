@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+
     
 
     const fightBtn = document.getElementById("fightBtn");
@@ -24,11 +25,21 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     function performAction(actionType) {
+        if (fightBtn && fightBtn.innerText.includes("Continue")) {
+            window.location.reload();
+            return;
+        }
+
+        if (fightBtn && fightBtn.innerText.includes("Restart")) {
+            window.location.href = "/game/restart/"; 
+            return;
+        }
+
         if (fightBtn) fightBtn.disabled = true;
         if (magicBtn) magicBtn.disabled = true;
 
 
-        fetch("/api/attack/", { 
+        fetch("/game/api/attack/", { 
             method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
@@ -42,7 +53,15 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(response => response.json())
         .then(data => {
             if (data.error) {
-                alert(data.error);
+                if (battleLog) {
+                    const newLog = document.createElement("p");
+                    newLog.innerHTML = `<span class="log-warning"> Note: ${data.error}</span>`;
+                    newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
+                    newLog.style.paddingBottom = "8px";
+                    
+                    battleLog.appendChild(newLog);
+                    battleLog.scrollTop = battleLog.scrollHeight; 
+                }
                 enableButtons();
                 return;
             }
@@ -70,9 +89,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
             if (data.game_status === "won") {
-                if (fightBtn) fightBtn.innerText = "Victory!";
-            } else if (data.game_status === "lost") {
-                if (fightBtn) fightBtn.innerText = "Game Over";
+                if (fightBtn) {
+                    fightBtn.innerText = "Continue ➔";
+                    fightBtn.classList.replace("btn-danger", "btn-success"); 
+                    fightBtn.disabled = false; 
+                }
+            }
+             else if (data.game_status === "lost") {
+                if (fightBtn) {
+                    fightBtn.innerText = "Restart";
+                    fightBtn.classList.replace("btn-danger", "btn-dark"); 
+                    fightBtn.disabled = false; 
+                }
             } else {
                 enableButtons();
             }

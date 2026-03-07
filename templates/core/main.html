@@ -41,6 +41,9 @@
                         data-hp="{{ enemy_hp_percent }}">
                     </div>
                 </div>
+                <script>
+                    document.getElementById('enemyHpBar').style.width = "{{ enemy_hp_percent|default:100 }}%";
+                </script>
             </div>
         </div>
 
@@ -77,4 +80,7 @@
 
     </div>
 </div>
+
+<script src="{% static 'js/main.js' %}"></script>
+
 {% endblock %}
