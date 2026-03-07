@@ -19,13 +19,8 @@ class PlayerProfile(models.Model):
 
 
 class EnemyType(models.Model):
-    class Name(models.TextChoices):
-        SKULL = "SKULL", "Skull"
-        ZOMBIE = "ZOMBIE", "Zombie"
-        WITCH = "WITCH", "Witch"
-        DRAGON = "DRAGON", "Dragon"
+    name = models.CharField(max_length=50, unique=True)
 
-    name = models.CharField(max_length=20, choices=Name.choices, unique=True)
     level = models.PositiveSmallIntegerField(default=1)
     max_hp = models.PositiveIntegerField(default=20)
     damage = models.PositiveIntegerField(default=1)
@@ -33,38 +28,27 @@ class EnemyType(models.Model):
     is_boss = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
 
 class FriendType(models.Model):
-    class Name(models.TextChoices):
-        PHOENIX = "PHOENIX", "Phoenix"
-        SHOOTER = "SHOOTER", "Shooter"
-        FAIRY = "FAIRY", "Fairy"
-        HULK = "HULK", "Hulk"
-
     class EffectType(models.TextChoices):
         HEAL = "HEAL", "Heal"
         DAMAGE = "DAMAGE", "Damage"
         SPELL = "SPELL", "Spell"
         DEFENCE = "DEFENCE", "Defence"
 
-    name = models.CharField(max_length=20, choices=Name.choices, unique=True)
+    name = models.CharField(max_length=50, unique=True)
+
     ability = models.CharField(max_length=200, blank=True, default="")
     effect_type = models.CharField(max_length=20, choices=EffectType.choices)
     effect_value = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
 
 class Item(models.Model):
-    class Name(models.TextChoices):
-        SWORD = "SWORD", "Sword"
-        ARMOUR = "ARMOUR", "Armour"
-        HP_DRINK = "HP_DRINK", "HP Drink"
-        PHOENIX_FOOD = "PHOENIX_FOOD", "Phoenix Food"
-
     class Type(models.TextChoices):
         WEAPON = "WEAPON", "Weapon"
         ARMOUR = "ARMOUR", "Armour"
@@ -75,18 +59,21 @@ class Item(models.Model):
         DAMAGE_BOOST = "DAMAGE_BOOST", "Damage Boost"
         DEFENCE_BOOST = "DEFENCE_BOOST", "Defence Boost"
 
-    name = models.CharField(max_length=30, choices=Name.choices, unique=True)
+    name = models.CharField(max_length=50, unique=True)
+
     type = models.CharField(max_length=20, choices=Type.choices)
     price = models.PositiveIntegerField(default=0)
     effect = models.CharField(max_length=20, choices=Effect.choices)
     effect_value = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return self.get_name_display()
+        return self.name
 
 
 class InventoryItem(models.Model):
-    player = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, related_name="inventory")
+    player = models.ForeignKey(
+        PlayerProfile, on_delete=models.CASCADE, related_name="inventory"
+    )
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)
 
@@ -98,7 +85,9 @@ class InventoryItem(models.Model):
 
 
 class PlayerFriend(models.Model):
-    player = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE, related_name="friends")
+    player = models.ForeignKey(
+        PlayerProfile, on_delete=models.CASCADE, related_name="friends"
+    )
     friend = models.ForeignKey(FriendType, on_delete=models.CASCADE)
     is_active = models.BooleanField(default=False)
     unlocked_at = models.DateTimeField(auto_now_add=True)
