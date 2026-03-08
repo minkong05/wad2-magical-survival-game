@@ -16,7 +16,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect("home") 
+                return redirect("core:home") 
             else:
                 return render(request, "accounts/login.html", {
                     "error": "Your account is disabled."
@@ -47,7 +47,7 @@ def user_register(request):
             profile.user = user
             profile.save()
 
-            return redirect("home") 
+            return redirect("core:home") 
         else:
             print("User errors:", user_form.errors)
             print("Profile errors:", profile_form.errors)
@@ -67,4 +67,4 @@ def myaccount(request):
 
 def user_logout(request):
     logout(request)
-    return redirect("home") 
+    return redirect("core:home") 
