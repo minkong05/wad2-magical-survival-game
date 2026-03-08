@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Character Select{% endblock %}
+
+{% block content %}
+<h1>Choose Your Class</h1>
+
+{% if error %}
+  <p style="color:red">{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  {% csrf_token %}
+
+  <label>
+    <input type="radio" name="class_type" value="MAGE"
+      {% if profile.class_type == "MAGE" %}checked{% endif %}>
+    Mage
+  </label>
+  <br>
+
+  <label>
+    <input type="radio" name="class_type" value="SWORDSMAN"
+      {% if profile.class_type == "SWORDSMAN" %}checked{% endif %}>
+    Swordsman
+  </label>
+  <br><br>
+
+  <button type="submit">Confirm</button>
+</form>
+{% endblock %}
