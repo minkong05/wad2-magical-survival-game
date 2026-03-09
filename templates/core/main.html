@@ -18,8 +18,11 @@
         </div>
         <div class="col-md-6 text-end">
             <a href="{% url 'game:shop' %}" class="btn btn-outline-dark btn-sm">Shop</a>
+            <a href="{% url 'game:character_select' %}" class="btn btn-outline-dark btn-sm">Character Select</a>
+            <a href="{% url 'core:home' %}" class="btn btn-outline-dark btn-sm">Home</a>
+            <a href="{% url 'accounts:logout' %}" class="btn btn-outline-dark btn-sm">Log Out</a>
         </div>
-    </div>
+    </div>›
 
     <div class="row mt-4">
 
@@ -40,6 +43,9 @@
                         data-hp="{{ enemy_hp_percent }}">
                     </div>
                 </div>
+                <script>
+                    document.getElementById('enemyHpBar').style.width = "{{ enemy_hp_percent|default:100 }}%";
+                </script>
             </div>
         </div>
 
@@ -76,4 +82,7 @@
 
     </div>
 </div>
+
+<script src="{% static 'js/main.js' %}"></script>
+
 {% endblock %}
