@@ -22,6 +22,8 @@ def main(request):
         if player.monsters_defeated == 0:
             enemy = EnemyType.objects.filter(name="SKULL").first()
         elif player.monsters_defeated == 1:
+            enemy = EnemyType.objects.filter(name="ZOMBIE").first()
+        elif player.monsters_defeated == 2:
             enemy = EnemyType.objects.filter(name="WITCH").first()
         else:
             enemy = EnemyType.objects.filter(name="DRAGON").first()
