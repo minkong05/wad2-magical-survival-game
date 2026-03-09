@@ -114,4 +114,4 @@ def restart_game(request):
     player.encounters.filter(status__in=["ACTIVE", "LOST"]).delete()
     
     
-    return redirect('main')
+    return redirect('game:main')
