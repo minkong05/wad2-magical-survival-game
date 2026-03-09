@@ -7,13 +7,49 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import random
 import json  
-from .models import PlayerProfile, Encounter, InventoryItem
+from .models import PlayerProfile, Encounter, InventoryItem,EnemyType
 from django.shortcuts import render
 from django.shortcuts import redirect
 
 
+@login_required
 def main(request):
-    return render(request,'core/main.html')
+    player = request.user.playerprofile
+    
+    active_encounter = player.encounters.filter(status="ACTIVE").first()
+
+    if not active_encounter:
+        if player.monsters_defeated == 0:
+            enemy = EnemyType.objects.filter(name="SKULL").first()
+        elif player.monsters_defeated == 1:
+            enemy = EnemyType.objects.filter(name="ZOMBIE").first()
+        elif player.monsters_defeated == 2:
+            enemy = EnemyType.objects.filter(name="WITCH").first()
+        else:
+            enemy = EnemyType.objects.filter(name="DRAGON").first()
+            
+        if not enemy:
+            enemy = EnemyType.objects.first()
+            
+        if enemy:
+            active_encounter = Encounter.objects.create(
+                player=player,
+                enemy_type=enemy,
+                enemy_hp=enemy.max_hp,
+                status="ACTIVE"
+            )
+
+    enemy_hp_percent = 0
+    if active_encounter and active_encounter.enemy_type.max_hp > 0:
+        enemy_hp_percent = int((active_encounter.enemy_hp / active_encounter.enemy_type.max_hp) * 100)
+
+    context = {
+        'player': player,
+        'enemy_hp_percent': enemy_hp_percent,
+        'active_encounter': active_encounter,
+    }
+    
+    return render(request, 'core/main.html', context)
 
 
 @login_required
