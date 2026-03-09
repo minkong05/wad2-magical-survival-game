@@ -24,10 +24,10 @@
                 <a href="{% url 'game:main' %}">Main</a>
                 
                 <a href="{% url 'core:myaccount' %}">MyAccount</a>
-                <a href="{% url 'core:logout' %}">Logout</a>
+                <a href="{% url 'accounts:logout' %}">Logout</a>
             {% else %}
-                <a href="{% url 'core:login' %}">Login</a>
-                <a href="{% url 'core:register' %}">Register</a>
+                <a href="{% url 'accounts:login' %}">Login</a>
+                <a href="{% url 'accounts:register' %}">Register</a>
             {% endif %}
         </nav>
     </header>
