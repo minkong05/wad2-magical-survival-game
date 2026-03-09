@@ -10,6 +10,23 @@ from django.shortcuts import redirect
 def main(request):
     return render(request,'core/main.html')
 
+
+@login_required
+def character_select(request):
+    profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
+
+    if request.method == "POST":
+        class_type = request.POST.get("class_type")
+
+        if class_type in dict(PlayerProfile.CLASS_CHOICES):
+            profile.class_type = class_type
+            profile.save()
+            return redirect("core:main")
+
+    return render(request, "game/character_select.html", {
+        "choices": PlayerProfile.CLASS_CHOICES,
+        "current": profile.class_type,
+    })
 @login_required
 def perform_attack(request):
     if request.method == "POST":
