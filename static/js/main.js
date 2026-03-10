@@ -26,7 +26,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function performAction(actionType) {
         if (fightBtn && fightBtn.innerText.includes("Continue")) {
-            window.location.reload();
+            const form = document.getElementById("nextNodeForm");
+            if (form) {
+                form.submit();
+            } else {
+                window.location.reload(); 
+            }
             return;
         }
 

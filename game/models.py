@@ -14,6 +14,8 @@ class PlayerProfile(models.Model):
     coins = models.PositiveIntegerField(default=0)
     monsters_defeated = models.PositiveIntegerField(default=0)
 
+    current_node = models.IntegerField(default=0)
+
     def __str__(self):
         return f"{self.user.username} ({self.class_type or 'No class'})"
 
