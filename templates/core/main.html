@@ -4,16 +4,16 @@
 {% block title %}Main Game{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}">
+<link rel="stylesheet" href="{% static 'css/main.css' %}?v=1">
 {% endblock %}
 
 {% block content %}
 <div class="container-fluid main-container">
 
-    <div class="row top-bar align-items-center mb-4">
+    <div class="row top-bar align-items-center mb-4 mt-3">
         <div class="col-md-6">
-            <h4 class="level-title" style="color: #7A5C23; font-weight: bold;">
-                {% if game_mode == 'story' %}
+            <h4 class="epic-gold-title">
+                {% if game_mode == 'story' or game_mode == 'decision' %}
                     Story Mode
                 {% else %}
                     Level {{ player.level|default:"1" }}
@@ -21,8 +21,8 @@
             </h4>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{% url 'game:shop' %}" class="btn btn-outline-dark btn-sm">Shop</a>
-            <a href="{% url 'game:character_select' %}" class="btn btn-outline-dark btn-sm">Character Select</a>
+            <a href="{% url 'game:shop' %}" class="fantasy-btn me-2">Shop</a>
+            <a href="{% url 'game:character_select' %}" class="fantasy-btn">Character Select</a>
         </div>
     </div>
 
@@ -33,39 +33,26 @@
         </div>
 
         <div class="col-md-6 center-panel">
-            <div class="mt-2 p-4" style="background-color: #Fdf5e6; border: 2px solid #7A5C23; border-radius: 8px;">
-                <h5 class="fw-bold text-center" style="border-bottom: 2px dashed #7A5C23; padding-bottom: 10px; margin-bottom: 20px;">
-                    Story
-                </h5>
-                
+            <div class="mt-2 elegant-story-box">
                 <div id="story-scroll-container" style="height: 350px; overflow-y: auto; padding-right: 15px; text-align: left;">
-    
                     <p id="story-text-display" class="fs-5 mb-4" style="line-height: 1.8; color: #333;">
                         </p>
-    
                 </div>
                 
                 <p class="text-muted text-center mt-4" style="animation: blink 2s infinite; font-size: 0.9em;">
                     <i>[ Press <strong>Enter</strong> to continue ]</i>
                 </p>
             </div>
-
-            
         </div>
       
         <div class="col-md-3 right-panel">
             <div class="player-info text-center">
-                <img src="{% static 'images/knight.png' %}" class="img-fluid hero-img" alt="Hero">
-                <h5 class="mt-2">Hero</h5>
-                <p class="fw-bold mt-2" id="heroHpText">HP: {{ player.hp|default:100 }}</p>
+                <img src="{% static 'images/knight.png' %}?v=1" class="img-fluid hero-img" alt="Hero">
+                <h5 class="mt-2" style="color: #e0e0e0;">Hero</h5>
+                <p class="fw-bold mt-2" id="heroHpText" style="color: #e0e0e0;">HP: {{ player.hp|default:100 }}</p>
             </div>
         </div>
 
-    </div>
-
-    {{ story_texts|json_script:"storyData" }}
-    <script>"..." </script>
-        </div>
     </div>
 
     {{ story_texts|json_script:"storyData" }}
@@ -103,17 +90,17 @@
     {% elif game_mode == 'decision' %}
     <div class="row justify-content-center mt-5">
         <div class="col-md-8 text-center">
-            <div class="mt-2 p-5 shadow-lg" style="background-color: #1a1a1a; border: 3px solid darkred; border-radius: 10px; color: white;">
-                <h3 class="fw-bold mb-4" style="color: #ff4c4c;">The end game</h3>
-                <p class="fs-5 mb-5" style="line-height: 1.8;">
+            <div class="mt-2 elegant-story-box text-center">
+                <h3 class="fw-bold mb-4" style="color: #8B0000;">The end game</h3>
+                <p class="fs-5 mb-5" style="line-height: 1.8; color: #333;">
                     The dragon collapsed suddenly, and dark golden blood flowed on the gold coins.<br>I stand in front of its huge corpse, feeling the dark power that is enough to swallow people's hearts.<br>Now, it's time to decide...
                 </p>
                 
                 <div class="mt-5 fs-4" style="line-height: 2.5; text-align: left; display: inline-block;">
-                    <span style="color: #ff4c4c; animation: blink 3s infinite;">
+                    <span style="color: #8B0000; font-weight: bold; animation: blink 3s infinite;">
                         [ Press <strong>1</strong> ] Dig out the dragon's eyes and absorb the dark power
                     </span><br>
-                    <span style="color: #f39c12; animation: blink 3s infinite; animation-delay: 1.5s;">
+                    <span style="color: #d4af37; font-weight: bold; text-shadow: 0px 1px 2px rgba(0,0,0,0.2); animation: blink 3s infinite; animation-delay: 1.5s;">
                         [ Press <strong>2</strong> ] Release the flames and completely burn the bones
                     </span>
                 </div>
@@ -140,60 +127,55 @@
             }
         });
     </script>
-    <style>
-        @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.5;} 100% {opacity: 1;} }
-    </style>
 
     {% else %}
     <div class="row mt-4">
         <div class="col-md-3 left-panel">
             <div class="enemy-section text-center">
                 <img src="{% static 'images/skull.png' %}" class="img-fluid enemy-img" alt="Enemy">
-                <h5 class="mt-2 fw-bold" style="color: darkred;">{{ active_encounter.enemy_type.name }}</h5>
+                <h5 class="mt-2 fw-bold" style="color: #ff4c4c;">{{ active_encounter.enemy_type.name }}</h5>
             </div>
 
             <div class="enemy-hp mt-4 text-center">
-                <label class="fw-bold">HP</label>
-                <div class="progress">
+                <label class="fw-bold" style="color: #e0e0e0;">HP</label>
+                <div class="progress" style="background-color: #333;">
                     <div id="enemyHpBar" class="progress-bar bg-danger" role="progressbar" data-hp="{{ enemy_hp_percent }}"></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-6 center-panel">
-            <div id="battleLog" class="mt-2 p-4" style="background-color: #Fdf5e6; border: 2px solid #7A5C23;">
-                <h5 class="fw-bold" style="border-bottom: 2px dashed #7A5C23; padding-bottom: 10px;">
-                    Text Box
-                </h5>
-                <p id="logText" class="mt-3">A wild {{ active_encounter.enemy_type.name }} appears!</p>
+            <div id="battleLog" class="mt-2 elegant-story-box" style="height: 400px; overflow-y: auto;">
+                <p id="logText" class="mt-3 fs-5" style="color: #333; line-height: 1.6;">
+                    A wild {{ active_encounter.enemy_type.name }} appears!
+                </p>
             </div>
         </div>
       
         <div class="col-md-3 right-panel">
             <div class="player-info text-center">
                 <img src="{% static 'images/knight.png' %}" class="img-fluid hero-img" alt="Hero">
-                <h5 class="mt-2">Hero</h5>
-                <p class="fw-bold mt-2" id="heroHpText">HP: {{ player.hp|default:100 }}</p>
+                <h5 class="mt-2" style="color: #e0e0e0;">Hero</h5>
+                <p class="fw-bold mt-2" id="heroHpText" style="color: #e0e0e0;">HP: {{ player.hp|default:100 }}</p>
             </div>
 
-            <div class="action-buttons mt-4 d-grid gap-2">
-                <button id="fightBtn" class="btn btn-danger">Fight</button>
-                <button id="friendBtn" class="btn btn-success">Friend</button>
-                <button id="magicBtn" class="btn btn-primary">Magic</button>
-                <button id="itemBtn" class="btn btn-warning">Item</button>
+            <div class="action-buttons mt-4 d-grid gap-3">
+                <button id="fightBtn" class="btn btn-danger btn-lg shadow">Fight</button>
+                <button id="friendBtn" class="btn btn-success btn-lg shadow">Friend</button>
+                <button id="magicBtn" class="btn btn-primary btn-lg shadow">Magic</button>
+                <button id="itemBtn" class="btn btn-warning btn-lg shadow">Item</button>
             </div>
         </div>
     </div>
 
     <script>
-    
         const hpBar = document.getElementById('enemyHpBar');
         if (hpBar) {
             hpBar.style.width = hpBar.getAttribute('data-hp') + '%';
         }
     </script>
     
-    <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/main.js' %}?v=2"></script>
     {% endif %}
 
     <form id="nextNodeForm" method="POST" style="display: none;">

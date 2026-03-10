@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
     function performAction(actionType) {
-        if (fightBtn && fightBtn.innerText.includes("Continue")) {
+        if (fightBtn && fightBtn.getAttribute("data-status") === "continue") {
             const form = document.getElementById("nextNodeForm");
             if (form) {
                 form.submit();
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        if (fightBtn && fightBtn.innerText.includes("Restart")) {
+        if (fightBtn && fightBtn.getAttribute("data-status") === "restart") {
             window.location.href = "/game/restart/"; 
             return;
         }
@@ -96,6 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.game_status === "won") {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
+                    fightBtn.setAttribute("data-status", "continue");
                     fightBtn.classList.replace("btn-danger", "btn-success"); 
                     fightBtn.disabled = false; 
                 }
@@ -103,6 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
              else if (data.game_status === "lost") {
                 if (fightBtn) {
                     fightBtn.innerText = "Restart";
+                    fightBtn.setAttribute("data-status", "restart");
                     fightBtn.classList.replace("btn-danger", "btn-dark"); 
                     fightBtn.disabled = false; 
                 }
