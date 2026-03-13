@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import random
 import json  
-from .models import PlayerProfile, Encounter, InventoryItem,EnemyType
+from .models import PlayerProfile, Encounter, InventoryItem, EnemyType, FriendType
 from django.shortcuts import render
 from django.shortcuts import redirect
 
@@ -91,6 +91,7 @@ def buy_item(request, item_id):
 
     messages.success(request, f"Bought {item.name}!")
     return redirect("game:shop")
+
 def character_select(request):
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
 
@@ -106,6 +107,7 @@ def character_select(request):
         "choices": PlayerProfile.CLASS_CHOICES,
         "current": profile.class_type,
     })
+
 @login_required
 def perform_attack(request):
     if request.method == "POST":
@@ -127,9 +129,38 @@ def perform_attack(request):
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
+            
         elif action_type == "fight":
             player_damage = random.randint(10, 20)
             log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
+            
+        elif action_type == "friend":
+            player_friend = player.friends.filter(is_active=True).select_related("friend").first()
+            if not player_friend:
+                return JsonResponse({"error": "You dont have any friends :("})
+            
+            friend = player_friend.friend 
+            
+            if friend.effect_type == "HEAL":
+                heal_amount = friend.effect_value
+                player.hp = min(100,player.hp + heal_amount)
+                log_message = f"{friend.name} heals you for {heal_amount} HP!"
+                
+            elif friend.effect_type == "DAMAGE":
+                player_damage = friend.effect_value + random.randint(10,20)
+                log_message = f"{friend.name} strikes the {enemy_type.name} for {player_damage} damage!"
+                
+            elif friend.effect == "SPELL":
+                player_damage = random.randint(25,40) + (friend.effect_value * 2)
+                log_message = f"{friend.name} casts a powerful spell for {player_damage} damage!"
+                
+            elif friend.effect == "DEFENCE":
+                friend_defensive_damage_reduction = max(0,enemy_type.damage - friend.effect_value)
+                log_message = f"{friend.name} raises a shield, reducing incoming damage by {friend.effect_value}"
+                """ I dont know where the enemy damage would be calculated but the line below would implement defense 
+                if friend_enemy_damage_override is not None:
+                enemy_damage = friend_enemy_damage_override"""
+                
         else:
             player_damage = 0
             log_message = f"You did something unknown... "
@@ -197,6 +228,27 @@ def perform_attack(request):
         })
     
     return JsonResponse({"error": "Invalid request"}, status=400)
+
+@login_required
+def friend_help(request):
+    
+    player = request.user.playerprofile
+    friend = request.user.playerprofile
+
+    if request.method == "POST":
+        
+        try:
+            data = json.loads(request.body)
+            action_type = data.get("action_type", "friend") 
+        except json.JSONDecodeError:
+            action_type = "friend"
+            
+        active_encounter = friend.encounters.filter(status="ACTIVE").first()
+        
+        if not active_encounter:
+            return JsonResponse({"error": "You need to be in a fight for a friend to help you."}, status=400)
+            
+        
 
 def restart_game(request):
     player = request.user.playerprofile
