@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── CSS Variables ────────────────────────────────────────── */
+:root {
+  --gold:        #c9a84c;
+  --gold-light:  #e8c96a;
+  --gold-dim:    #7a5e28;
+  --ember:       #b84c1a;
+  --parchment:   #f0e6cc;
+  --parchment-dark: #d4c4a0;
+  --ink:         #1a1208;
+  --shadow:      #181512;
+  --stone:       #2a2218;
+  --stone-light: #3d3226;
+  --fog:         rgba(200, 175, 120, 0.08);
+}
+
+/* ── Reset inherited base font ───────────────────────────── */
+body {
+  font-family: 'Crimson Text', Georgia, serif;
+  color: var(--parchment);
+}
+
+
+
+/* ── Main background override ────────────────────────────── */
+main {
+  background:
+    linear-gradient(180deg,
+      #1a1208 0%,
+      #2a1e0e 25%,
+      #1e1508 55%,
+      #0d0905 100%
+    );
+  min-height: 100vh;
+
+}
+
+/* Floating ember particles */
+main::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(10px 10px at 15% 20%, rgba(201,168,76,.6), transparent),
+    radial-gradient(2px 2px at 35% 60%, rgba(201,168,76,.4), transparent),
+    radial-gradient(10px 10px at 55% 35%, rgba(201,168,76,.5), transparent),
+    radial-gradient(20px 20px at 75% 75%, rgba(201,168,76,.3), transparent),
+    radial-gradient(10px 10px at 88% 15%, rgba(201,168,76,.5), transparent),
+    radial-gradient(10px 10px at 25% 85%, rgba(184,76,26,.5), transparent),
+    radial-gradient(2px 2px at 65% 90%, rgba(184,76,26,.4), transparent),
+    radial-gradient(10px 10px at 92% 50%, rgba(201,168,76,.4), transparent);
+  animation: drift 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes drift {
+  from { transform: translateY(0px) scale(1); opacity: 0.5; }
+  to   { transform: translateY(-18px) scale(1.03); opacity: 1; }
+}
+
+/* ── Section wrapper ─────────────────────────────────────── */
+/* i think we dont have any messenge in home page but i just put it just for in case */
+.container section:first-child,
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Hero Title ──────────────────────────────────────────── */
+h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  font-weight: 900;
+  color: var(--gold-light);
+  text-align: center;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin-bottom: 0.4em;
+  text-shadow:
+    0 0 40px rgba(201,168,76,.7),
+    0 0 80px rgba(201,168,76,.3),
+    2px 3px 6px rgba(0,0,0,.9);
+  animation: 
+    titleGlow 3s ease-in-out infinite alternate, 
+    fadeSlideDown 0.9s ease both;
+}
+
+@keyframes titleGlow {
+  from { text-shadow: 0 0 30px rgba(201,168,76,.5), 0 0 60px rgba(201,168,76,.2), 2px 3px 6px rgba(0,0,0,.9); }
+  to   { text-shadow: 0 0 60px rgba(201,168,76,.9), 0 0 120px rgba(201,168,76,.4), 2px 3px 6px rgba(0,0,0,.9); }
+}
+
+/* Decorative divider under title */
+h1::after {
+  content: '⚔️  🐉  ⚔️';
+  display: block;
+  font-size: 1.3rem;
+  margin-top: 0.3em;
+  letter-spacing: 0.4em;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+/* ── Hero Description ────────────────────────────────────── */
+section > p {
+  font-family: 'Crimson Text', serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  font-style: italic;
+  color: var(--parchment-dark);
+  text-align: center;
+  max-width: 620px;
+  margin: 0 auto 2.5rem;
+  line-height: 1.8;
+  animation: fadeSlideDown 1s ease 0.2s both;
+}
+
+/* ── Parchment Card (How to Play) ────────────────────────── */
+section section {
+  background:
+    linear-gradient(135deg, rgba(240,230,204,.07) 0%, rgba(212,196,160,.04) 100%);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 4px;
+  padding: 2rem 2.5rem;
+  max-width: 640px;
+  margin: 0 auto 2.5rem;
+  position: relative;
+  box-shadow:
+    0 0 0 1px rgba(201,168,76,.1),
+    inset 0 0 40px rgba(0,0,0,.3),
+    0 8px 40px rgba(0,0,0,.6);
+  animation: fadeSlideDown 1s ease 0.4s both;
+}
+
+/* Corner ornaments */
+section section::before,
+section section::after {
+  content: '✦';
+  position: absolute;
+  font-size: 1rem;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+section section::before { top: 10px; left: 14px; }
+section section::after  { bottom: 10px; right: 14px; }
+
+/* ── How to Play heading ─────────────────────────────────── */
+.home-hero__heading {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid rgba(201,168,76,.25);
+  padding-bottom: 0.6rem;
+}
+
+/* ── Steps list ──────────────────────────────────────────── */
+.home-hero__steps {
+  padding-left: 0;
+  list-style: none;
+  counter-reset: steps;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.home-hero__steps li {
+  counter-increment: steps;
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  font-size: 1.05rem;
+  color: var(--parchment);
+  line-height: 1.6;
+}
+
+.home-hero__steps li::before {
+  content: counter(steps);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--gold);
+  min-width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(201,168,76,.5);
+}
+
+/* ── CTA Buttons ─────────────────────────────────────────── */
+.home-hero__actions {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  animation: fadeSlideDown 1s ease 0.6s both;
+  margin-top: 0.5rem;
+}
+
+.btn-game {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.85rem 2.2rem;
+  border-radius: 3px;
+  display: inline-block;
+  position: relative;
+  transition: all 0.25s ease;
+  overflow: hidden;
+
+  /* Solid gold button */
+  background: linear-gradient(135deg, #b8922a 0%, #e8c96a 50%, #b8922a 100%);
+  color: var(--ink);
+  border: 1px solid var(--gold-light);
+  box-shadow:
+    0 0 20px rgba(201,168,76,.4),
+    inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+.btn-game::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.15) 50%, transparent 60%);
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.btn-game:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 35px rgba(201,168,76,.7),
+    0 6px 20px rgba(0,0,0,.5),
+    inset 0 1px 0 rgba(255,255,255,.3);
+  color: var(--ink);
+}
+
+.btn-game:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-game:active {
+  transform: translateY(0);
+  box-shadow: 0 0 15px rgba(201,168,76,.4);
+}
+
+/* Ghost variant */
+.btn-game--ghost {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  box-shadow:
+    0 0 10px rgba(201,168,76,.15),
+    inset 0 0 20px rgba(201,168,76,.05);
+}
+
+.btn-game--ghost:hover {
+  background: rgba(201,168,76,.1);
+  color: var(--gold-light);
+  border-color: var(--gold);
+  box-shadow:
+    0 0 25px rgba(201,168,76,.4),
+    0 6px 20px rgba(0,0,0,.5);
+}
+
+/* ── Shared fade-in animation ────────────────────────────── */
+@keyframes fadeSlideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  section section {
+    padding: 1.4rem 1.2rem;
+  }
+  .home-hero__actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  .btn-game {
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
+  }
+}
