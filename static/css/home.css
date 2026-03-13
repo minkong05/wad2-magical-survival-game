@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
+
 /* ── CSS Variables ────────────────────────────────────────── */
 :root {
   --gold:        #c9a84c;
@@ -16,7 +17,7 @@
 }
 
 /* ── Reset inherited base font ───────────────────────────── */
-body {
+main {
   font-family: 'Crimson Text', Georgia, serif;
   color: var(--parchment);
 }
@@ -24,7 +25,7 @@ body {
 
 
 /* ── Main background override ────────────────────────────── */
-main {
+body {
   background:
     linear-gradient(180deg,
       #1a1208 0%,
