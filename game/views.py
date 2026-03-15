@@ -1,28 +1,26 @@
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from .models import InventoryItem, Item, PlayerProfile
 from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
 import random
 import json  
-from .models import PlayerProfile, Encounter, InventoryItem,EnemyType
-from django.shortcuts import render
-from django.shortcuts import redirect
-
+from .models import Encounter, EnemyType
 
 @login_required
 def main(request):
+    if not hasattr(request.user, 'playerprofile'):
+        PlayerProfile.objects.create(user=request.user)
+        return redirect('game:restart')
+        
     player = request.user.playerprofile
     
     if request.method == "POST":
         action = request.POST.get("action")
         
         if action == "next_node":
-
             if player.current_node >= 11:
-                return redirect('/game/restart/') 
+                return redirect('game:restart') 
             else:
                 player.current_node += 1
                 player.save()
@@ -37,6 +35,17 @@ def main(request):
             player.current_node = 12  
             player.save()
             return redirect('game:main')
+       
+        elif action == "open_shop":
+            player.current_node += 1
+            player.save()
+            return redirect('game:shop') 
+            
+        elif action == "leave_npc":
+            player.current_node += 1
+            player.save()
+            return redirect('game:main')
+
 
     node = player.current_node
     active_encounter = player.encounters.filter(status="ACTIVE").first()
@@ -61,7 +70,6 @@ def main(request):
             "Absurd as it sounds, half a month ago, the Grand Arcanist before the royal throne toyed with his crystal ball and told me these damned nightmares were the omen of a dragonslayer's awakening.<br><br>"
             "Shortly thereafter, a royal decree dubbed me a Dragonslayer Knight, and I set out alone on a journey to hunt the beast. There was no honor guard cheering me on like in the adventure tales, nor was anyone willing to accompany me into the unknown darkness. The only companion on my entire journey was the solitary, reckless courage I held when I first accepted this quest.",
             
-        
             "Everyone dreams of treading upon the dragon's corpse to become a hero of the realm, and I was no exception.<br><br>"
             "For as long as I can remember, evil forces have threatened the lives of everyone around me. Truth be told, there have been many dragonslayers before me. In the beginning, the people watched them march off to crusade against the beast, their eyes filled with hope and blessings. Yet, day after day, the triumphant news of a returning hero never came; instead, there were only grim tidings of the dragon repeatedly ravaging the kingdom's borders. Those previous slayers faded into silence years ago, their fates unknown. By the time the mantle fell to my generation, even the grand send-off ceremonies had been abandoned.<br><br>"
             "Perhaps what is more terrifying than the dragon is the repeated shattering of hope.<br><br>"
@@ -95,17 +103,27 @@ def main(request):
         context['story_texts'] = [
             "The skeleton's bones scattered across the ground, crumbling into a pile of ash. I couldn't help but let out a long sigh of relief.<br><br>Just then, the clatter of wooden cart wheels echoed from the nearby woods.",
             "A mysterious merchant, draped in a heavy cloak that obscured his face, stopped before me.<br><br>\"Heh, well done, young dragonslayer! But the road ahead is still long, and that scrap metal you're wearing won't last you to the dragon's lair.\" He chuckled hoarsely and pulled back the canvas on his cart, revealing a dazzling array of potions and glowing magic scrolls.",
-            "\"I've got some good stuff here. Every time you defeat those pesky monsters, the loot they drop can be traded with me for rare collectibles. As long as you have enough coins, I can even get you a demon's tear.\"<br><br><span style='color: #8B0000; font-weight: bold;'>(Tip: You can click the Shop button in the top right corner to buy supplies with the coins you just earned. After shopping, return to this page and press Enter to continue your journey.)</span>"
+            "\"I've got some good stuff here. Every time you defeat those pesky monsters, the loot they drop can be traded with me for rare collectibles. As long as you have enough coins, I can even get you a demon's tear.\"<br><br><span style='color: #8B0000; font-weight: bold;'>(Tip: You can click the Trade button ahead or the Shop button in the top right corner. After shopping, return to this page to continue your journey.)</span>"
         ]
-        
+
     elif node == 3:
+        context['game_mode'] = 'npc'
+        context['npc_name'] = 'Mysterious Wandering Merchant'
+        context['npc_image'] = 'merchant.png' 
+        context['npc_dialogue'] = (
+            "Heh heh heh... A Dragonslayer Knight, isn't it? "
+            "It has been years since I saw someone foolish enough to walk this path. "
+            "The road ahead is paved with bones. Care to buy something to extend your miserable life?"
+        )
+
+    elif node == 4:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Bidding farewell to the mysterious merchant, I continued down the muddy path.<br><br>A crow outside the barn let out a sudden shriek. I snapped back to reality, my eyes locked on a rotting hand thrusting out from the ruined, withered blossoms.",
             "I tightened my grip on my weapon, bracing for the fight. Having accepted the plea of the unarmed and defenseless, I could not afford to show a sliver of cowardice."
         ]
         
-    elif node == 4:
+    elif node == 5:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="ZOMBIE").first()
@@ -120,7 +138,7 @@ def main(request):
                     status="ACTIVE"
                 )
                 
-    elif node == 5:
+    elif node == 6:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Thick mist veiled the swamp. I stepped into a muddy hollow, and no matter how hard I struggled, I couldn't pull my trapped boot free. Just as frustration took hold, the vines that had been lying dormant nearby silently coiled around my ankle. I tried to dispel them with an incantation, but it backfired; I was bound fast to the spot, entirely immobilized.<br><br>"
@@ -135,7 +153,7 @@ def main(request):
             "<span style='color: #8B0000; font-weight: bold;'>(Warning: The dark wizard's shadow power suppresses your magic, and healing/magic spells cannot be used in this battle!)</span>"
         ]
 
-    elif node == 6:
+    elif node == 7:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="witch").first()
@@ -150,23 +168,28 @@ def main(request):
                     status="ACTIVE"
                 )
                 
-    elif node == 7:
+    elif node == 8:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "The shattered signpost bore the final, desperate words carved by a previous hero, as a biting wind howled through the hall.<br><br>I tightened my grip on the hilt of my sword, stepped over a sea of bleached bones, and pushed open the massive bronze doors.",
             "Coiled upon the throne sat the sky-blotting, pureblood red dragon.<br><br>It slowly opened its dark-gold slitted pupils, eyeing me—its uninvited guest—with mocking amusement. The air was thick with the stench of sulfur and despair. The final trial had begun!"
         ]
 
-    elif node == 8:
+    elif node == 9:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="dragon").first()
             if not enemy:
                 enemy = EnemyType.objects.first()
             if enemy:
-                active_encounter = Encounter.objects.create(player=player, enemy_type=enemy, enemy_hp=enemy.max_hp, status="ACTIVE")
+                active_encounter = Encounter.objects.create(
+                    player=player, 
+                    enemy_type=enemy, 
+                    enemy_hp=enemy.max_hp, 
+                    status="ACTIVE"
+                )
 
-    elif node == 9:
+    elif node == 10:
         context['game_mode'] = 'decision'  
 
     elif node == 11:
@@ -183,10 +206,15 @@ def main(request):
             "I dragged my exhausted body back to the town. This time, there was no superficial honor guard—only the heartfelt cheers and warm tears of the reborn commoners... The spark of hope had finally been rekindled in this era.<br><br><span style='color:goldenrod; font-weight:bold;'>【 TRUE ENDING: Breaking Dawn 】</span><br><br>(Press Enter to restart)"
         ]
 
-    if context['game_mode'] == 'combat' and active_encounter:
-        context['active_encounter'] = active_encounter
-        if active_encounter.enemy_type.max_hp > 0:
-            context['enemy_hp_percent'] = int((active_encounter.enemy_hp / active_encounter.enemy_type.max_hp) * 100)
+    if context['game_mode'] == 'combat':
+        if active_encounter:
+            context['active_encounter'] = active_encounter
+            if active_encounter.enemy_type.max_hp > 0:
+                context['enemy_hp_percent'] = int((active_encounter.enemy_hp / active_encounter.enemy_type.max_hp) * 100)
+        else:
+            
+            messages.error(request, "A disturbance in the magical weave occurred. The world has reset.")
+            return redirect('game:restart')
     
     return render(request, 'core/main.html', context)
 
