@@ -1,7 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    
-
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
     const enemyHpBar = document.getElementById("enemyHpBar");
@@ -23,32 +21,32 @@ document.addEventListener("DOMContentLoaded", function() {
         return cookieValue;
     }
 
-
-    function performAction(actionType) {
+    function performAction(actionType, itemId = null) {
         if (fightBtn && fightBtn.innerText.includes("Continue")) {
             window.location.reload();
             return;
         }
 
         if (fightBtn && fightBtn.innerText.includes("Restart")) {
-            window.location.href = "/game/restart/"; 
+            window.location.href = "/game/restart/";
             return;
         }
 
         if (fightBtn) fightBtn.disabled = true;
         if (magicBtn) magicBtn.disabled = true;
+        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = true);
 
+        const body = { "action_type": actionType };
+        if (itemId) body["item_id"] = itemId;
 
-        fetch("/game/api/attack/", { 
+        fetch("/game/api/attack/", {
             method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                "action_type": actionType  
-            })
+            body: JSON.stringify(body)
         })
         .then(response => response.json())
         .then(data => {
@@ -58,19 +56,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     newLog.innerHTML = `<span class="log-warning"> Note: ${data.error}</span>`;
                     newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
                     newLog.style.paddingBottom = "8px";
-                    
                     battleLog.appendChild(newLog);
-                    battleLog.scrollTop = battleLog.scrollHeight; 
+                    battleLog.scrollTop = battleLog.scrollHeight;
                 }
                 enableButtons();
                 return;
             }
 
-
             if (enemyHpBar) {
                 enemyHpBar.style.width = data.enemy_hp_percent + "%";
             }
-            
+
             if (heroHpText) {
                 heroHpText.innerText = "HP: " + data.player_hp;
             }
@@ -78,28 +74,24 @@ document.addEventListener("DOMContentLoaded", function() {
             if (battleLog) {
                 const newLog = document.createElement("p");
                 newLog.innerHTML = data.log_message;
-                newLog.style.color = "#2B1A0D"; 
-                newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)"; 
+                newLog.style.color = "#2B1A0D";
+                newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
                 newLog.style.paddingBottom = "8px";
-                
                 battleLog.appendChild(newLog);
-                
                 battleLog.scrollTop = battleLog.scrollHeight;
             }
-
 
             if (data.game_status === "won") {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
-                    fightBtn.classList.replace("btn-danger", "btn-success"); 
-                    fightBtn.disabled = false; 
+                    fightBtn.classList.replace("btn-danger", "btn-success");
+                    fightBtn.disabled = false;
                 }
-            }
-             else if (data.game_status === "lost") {
+            } else if (data.game_status === "lost") {
                 if (fightBtn) {
                     fightBtn.innerText = "Restart";
-                    fightBtn.classList.replace("btn-danger", "btn-dark"); 
-                    fightBtn.disabled = false; 
+                    fightBtn.classList.replace("btn-danger", "btn-dark");
+                    fightBtn.disabled = false;
                 }
             } else {
                 enableButtons();
@@ -114,18 +106,25 @@ document.addEventListener("DOMContentLoaded", function() {
     function enableButtons() {
         if (fightBtn) fightBtn.disabled = false;
         if (magicBtn) magicBtn.disabled = false;
+        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = false);
     }
-
 
     if (fightBtn) {
         fightBtn.addEventListener("click", function() {
-            performAction("fight"); 
+            performAction("fight");
         });
     }
 
     if (magicBtn) {
         magicBtn.addEventListener("click", function() {
-            performAction("magic"); 
+            performAction("magic");
         });
     }
+
+    document.querySelectorAll(".itemBtn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            const itemId = this.getAttribute("data-item-id");
+            performAction("item", itemId);
+        });
+    });
 });
