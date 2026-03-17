@@ -1,14 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
 
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
+
 
 header {
+  background-color: black;
   position: sticky;
   top: 0;
   z-index: 1000;
+}
+
+body {
+  margin: 0
 }
 
 nav {
