@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+
+/* ── CSS Variables ────────────────────────────────────────── */
+:root {
+  --gold:        #c9a84c;
+  --gold-light:  #e8c96a;
+  --gold-dim:    #7a5e28;
+  --ember:       #b84c1a;
+  --parchment:   #f0e6cc;
+  --parchment-dark: #d4c4a0;
+  --ink:         #1a1208;
+  --shadow:      #181512;
+  --stone:       #2a2218;
+  --stone-light: #3d3226;
+  --fog:         rgba(200, 175, 120, 0.08);
+}
+
+/* ── Main background override ────────────────────────────── */
+body {
+  background:
+    linear-gradient(180deg,
+      #1a1208 0%,
+      #2a1e0e 25%,
+      #1e1508 55%,
+      #0d0905 100%
+    );
+  min-height: 100vh;
+
+}
+
+/* Floating ember particles */
+main::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(10px 10px at 15% 20%, rgba(201,168,76,.6), transparent),
+    radial-gradient(2px 2px at 35% 60%, rgba(201,168,76,.4), transparent),
+    radial-gradient(10px 10px at 55% 35%, rgba(201,168,76,.5), transparent),
+    radial-gradient(20px 20px at 75% 75%, rgba(201,168,76,.3), transparent),
+    radial-gradient(10px 10px at 88% 15%, rgba(201,168,76,.5), transparent),
+    radial-gradient(10px 10px at 25% 85%, rgba(184,76,26,.5), transparent),
+    radial-gradient(2px 2px at 65% 90%, rgba(184,76,26,.4), transparent),
+    radial-gradient(10px 10px at 92% 50%, rgba(201,168,76,.4), transparent);
+  animation: drift 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes drift {
+  from { transform: translateY(0px) scale(1); opacity: 0.5; }
+  to   { transform: translateY(-18px) scale(1.03); opacity: 1; }
+}
+

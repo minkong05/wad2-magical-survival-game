@@ -1,0 +1,263 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* ── CSS Variables (matches home.css) ───────────────────── */
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-dim: #7a5e28;
+  --ember: #b84c1a;
+  --parchment: #f0e6cc;
+  --parchment-dark: #d4c4a0;
+  --ink: #1a1208;
+  --shadow: #181512;
+  --stone: #2a2218;
+  --stone-light: #3d3226;
+  --fog: rgba(200, 175, 120, 0.08);
+}
+
+/* ── Base text ───────────────────────────────────────────── */
+main {
+  font-family: 'Crimson Text', Georgia, serif;
+  color: var(--parchment);
+}
+
+/* ── Page wrapper ────────────────────────────────────────── */
+.aboutus-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ── Shared section card style ───────────────────────────── */
+.aboutus-section-inner {
+  max-width: 750px;
+  position: relative;
+  margin: 0 auto;
+  z-index: 1;
+  background: linear-gradient(135deg, rgba(240, 230, 204, 0.07) 0%, rgba(212, 196, 160, 0.04) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.3);
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px rgba(201, 168, 76, 0.1),
+    inset 0 0 40px rgba(0, 0, 0, 0.3),
+    0 8px 40px rgba(0, 0, 0, 0.6);
+  animation: fadeSlideDown 1s ease both;
+}
+
+.aboutus-section::before,
+.aboutus-section::after {
+  content: '✦';
+  position: absolute;
+  font-size: 1rem;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+
+.aboutus-section::before {
+  top: 10px;
+  left: 14px;
+}
+
+.aboutus-section::after {
+  bottom: 10px;
+  right: 14px;
+}
+
+.aboutus-section-inner {
+  padding: 2rem 2.5rem;
+}
+
+section {
+  padding: 0 0 3.6rem 0;
+}
+
+/* ── Headings ────────────────────────────────────────────── */
+.aboutus-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  font-weight: 900;
+  color: var(--gold-light);
+  text-align: center;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin-bottom: 0.4em;
+  text-shadow:
+    0 0 40px rgba(201,168,76,.7),
+    0 0 80px rgba(201,168,76,.3),
+    2px 3px 6px rgba(0,0,0,.9);
+  animation: 
+    titleGlow 3s ease-in-out infinite alternate, 
+    fadeSlideDown 0.9s ease both;
+}
+
+.aboutus-title::after {
+  content: '⚔️  🐉  ⚔️';
+  display: block;
+  font-size: 1.3rem;
+  margin-top: 0.3em;
+  letter-spacing: 0.4em;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+.aboutus-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0 0 1.2rem;
+  border-bottom: 1px solid rgba(201, 168, 76, 0.25);
+  padding-bottom: 0.6rem;
+}
+
+/* ── Paragraph text ──────────────────────────────────────── */
+.aboutus-text {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--parchment-dark);
+  line-height: 1.8;
+  margin: 0;
+  animation: 
+    titleGlow 3s ease-in-out infinite alternate, 
+    fadeSlideDown 0.9s ease both;
+}
+
+.aboutus-intro .aboutus-text {
+  font-style: italic;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.aboutus-team .aboutus-text {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+/* ── Lists ───────────────────────────────────────────────── */
+.aboutus-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.aboutus-list-item {
+  position: relative;
+  padding-left: 2rem;
+  font-size: 1.05rem;
+  color: var(--parchment);
+  line-height: 1.6;
+}
+
+.aboutus-list-item::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  top: 0.2rem;
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+
+.aboutus-team-list {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.aboutus-team-list .aboutus-list-item {
+  text-align: center;
+  padding-left: 0;
+}
+
+.aboutus-team-list .aboutus-list-item::before {
+  position: static;
+  margin-right: 0.55rem;
+}
+
+/* ── Team image ──────────────────────────────────────────── */
+.aboutus-image-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.aboutus-image {
+  max-width: min(100%, 420px);
+  height: auto;
+  border: 1px solid rgba(201, 168, 76, 0.4);
+  border-radius: 4px;
+  box-shadow:
+    0 0 24px rgba(201, 168, 76, 0.18),
+    0 10px 28px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Staggered entrance ──────────────────────────────────── */
+.aboutus-intro {
+  animation-delay: 0.1s;
+}
+
+.aboutus-features {
+  animation-delay: 0.2s;
+}
+
+.aboutus-team {
+  animation-delay: 0.3s;
+}
+
+.aboutus-tech {
+  animation-delay: 0.4s;
+}
+
+/* ── Animations from home.css style ─────────────────────── */
+@keyframes titleGlow {
+  from {
+    text-shadow: 0 0 30px rgba(201, 168, 76, 0.5), 0 0 60px rgba(201, 168, 76, 0.2), 2px 3px 6px rgba(0, 0, 0, 0.9);
+  }
+  to {
+    text-shadow: 0 0 60px rgba(201, 168, 76, 0.9), 0 0 120px rgba(201, 168, 76, 0.4), 2px 3px 6px rgba(0, 0, 0, 0.9);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .aboutus-section-inner {
+    padding: 1.5rem 1.35rem;
+  }
+
+  .aboutus-list-item {
+    padding-left: 1.6rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .aboutus-page {
+    gap: 1rem;
+  }
+
+  .aboutus-title::after {
+    letter-spacing: 0.22em;
+    font-size: 1.05rem;
+  }
+
+  .aboutus-subtitle {
+    letter-spacing: 0.08em;
+  }
+
+  .aboutus-image {
+    width: 100%;
+  }
+}
