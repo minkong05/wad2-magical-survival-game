@@ -14,7 +14,7 @@
     <div class="row top-bar align-items-center mb-4 mt-3">
         <div class="col-md-6">
             <h4 class="epic-gold-title">
-                {% if game_mode == 'story' or game_mode == 'decision' or game_mode == 'npc' %}
+                {% if game_mode == 'story' or game_mode == 'decision' or game_mode == 'npc' or game_mode == 'interactive_npc' %}
                     Story Mode
                 {% else %}
                     Level {{ player.level|default:"1" }}
@@ -29,23 +29,17 @@
 
     {% if game_mode == 'story' %}
     <div class="row mt-4">
-        
-        <div class="col-md-3 left-panel">
-        </div>
-
+        <div class="col-md-3 left-panel"></div>
         <div class="col-md-6 center-panel">
             <div class="mt-2 elegant-story-box">
                 <div id="story-scroll-container" style="height: 350px; overflow-y: auto; padding-right: 15px; text-align: left;">
-                    <p id="story-text-display" class="fs-5 mb-4" style="line-height: 1.8; color: #333;">
-                        </p>
+                    <p id="story-text-display" class="fs-5 mb-4" style="line-height: 1.8; color: #333;"></p>
                 </div>
-                
                 <p class="text-muted text-center mt-4" style="animation: blink 2s infinite; font-size: 0.9em;">
                     <i>[ Press <strong>Enter</strong> to continue ]</i>
                 </p>
             </div>
         </div>
-      
         <div class="col-md-3 right-panel">
             <div class="player-info text-center">
                 <img src="{% static 'images/knight.png' %}?v=1" class="img-fluid hero-img" alt="Hero">
@@ -53,7 +47,6 @@
                 <p class="fw-bold mt-2" id="heroHpText" style="color: #e0e0e0;">HP: {{ player.hp|default:100 }}</p>
             </div>
         </div>
-
     </div>
 
     {{ story_texts|json_script:"storyData" }}
@@ -74,7 +67,6 @@
                 document.getElementById('nextNodeForm').submit();
             }
         }
-
         showNextLine();
 
         document.addEventListener('keydown', function(event) {
@@ -96,7 +88,6 @@
                 <p class="fs-5 mb-5" style="line-height: 1.8; color: #333;">
                     The dragon collapsed suddenly, and dark golden blood flowed on the gold coins.<br>I stand in front of its huge corpse, feeling the dark power that is enough to swallow people's hearts.<br>Now, it's time to decide...
                 </p>
-                
                 <div class="mt-5 fs-4" style="line-height: 2.5; text-align: left; display: inline-block;">
                     <span style="color: #8B0000; font-weight: bold; animation: blink 3s infinite;">
                         [ Press <strong>1</strong> ] Dig out the dragon's eyes and absorb the dark power
@@ -105,7 +96,6 @@
                         [ Press <strong>2</strong> ] Release the flames and completely burn the bones
                     </span>
                 </div>
-
                 <form id="decisionForm" method="POST" style="display: none;">
                     {% csrf_token %}
                     <input type="hidden" name="action" id="decisionAction" value="">
@@ -129,7 +119,44 @@
         });
     </script>
 
-   {% elif game_mode == 'npc' %}
+    {% elif game_mode == 'npc' %}
+    <div class="row mt-4">
+        <div class="col-md-3 left-panel text-center">
+            <div class="enemy-section">
+                <img src="{% static 'images/'|add:npc_image %}?v=1" class="img-fluid enemy-img" alt="{{ npc_name }}">
+                <h5 class="mt-3 fw-bold" style="color: #d4af37; text-shadow: 1px 1px 2px #000;">
+                    {{ npc_name }}
+                </h5>
+            </div>
+        </div>
+        <div class="col-md-6 center-panel">
+            <div class="mt-2 elegant-story-box" style="min-height: 250px;">
+                <p id="story-text-display" class="fs-4 mt-2" style="color: #333; line-height: 1.8; font-family: 'EB Garamond', serif;">
+                    "{{ npc_dialogue }}"
+                </p>
+                <p class="text-muted text-center mt-5" style="animation: blink 2s infinite; font-size: 0.9em;">
+                    <i>[ Press <strong>Enter</strong> to leave ]</i>
+                </p>
+            </div>
+        </div>
+        <div class="col-md-3 right-panel">
+            <div class="player-info text-center">
+                <img src="{% static 'images/knight.png' %}?v=1" class="img-fluid hero-img" alt="Hero">
+                <h5 class="mt-2" style="color: #e0e0e0;">Hero</h5>
+                <p class="fw-bold mt-2" id="heroHpText" style="color: #e0e0e0;">HP: {{ player.hp|default:100 }}</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault(); 
+                document.getElementById('nextNodeForm').submit();
+            }
+        });
+    </script>
+
+    {% elif game_mode == 'interactive_npc' %}
     <div class="row mt-4">
         <div class="col-md-3 left-panel text-center">
             <div class="enemy-section">
@@ -142,13 +169,17 @@
 
         <div class="col-md-6 center-panel">
             <div class="mt-2 elegant-story-box" style="min-height: 250px;">
-                <p id="story-text-display" class="fs-4 mt-2" style="color: #333; line-height: 1.8; font-family: 'EB Garamond', serif;">
+                <p class="fs-4 mt-2 mb-4" style="color: #333; line-height: 1.8; font-family: 'EB Garamond', serif;">
                     "{{ npc_dialogue }}"
                 </p>
                 
-                <p class="text-muted text-center mt-5" style="animation: blink 2s infinite; font-size: 0.9em;">
-                    <i>[ Press <strong>Enter</strong> to leave ]</i>
-                </p>
+                <div class="mt-4 fs-5" style="line-height: 2.2; text-align: left; display: inline-block;">
+                    {% for choice in choices %}
+                        <span style="color: #8B0000; font-weight: bold;">
+                            [ Press <strong>{{ forloop.counter }}</strong> ] <span style="color: #333;">{{ choice.text }}</span>
+                        </span><br>
+                    {% endfor %}
+                </div>
             </div>
         </div>
       
@@ -161,14 +192,39 @@
         </div>
     </div>
 
+    <form id="interactiveForm" method="POST" style="display: none;">
+        {% csrf_token %}
+        <input type="hidden" name="action" id="interactiveAction" value="">
+    </form>
+
+    {{ choices|json_script:"choicesData" }}
+
     <script>
         document.addEventListener('keydown', function(event) {
-            if (event.key === 'Enter') {
-                event.preventDefault(); 
-                document.getElementById('nextNodeForm').submit();
+            const actionInput = document.getElementById('interactiveAction');
+            const form = document.getElementById('interactiveForm');
+            const dataElement = document.getElementById('choicesData');
+            
+            if (dataElement) {
+                const rawChoices = JSON.parse(dataElement.textContent);
+                
+                const choices = rawChoices.map(function(choice, index) {
+                    return {
+                        key: (index + 1).toString(),
+                        action: choice.action
+                    };
+                });
+
+                const selectedChoice = choices.find(c => c.key === event.key);
+                if (selectedChoice) {
+                    event.preventDefault();
+                    actionInput.value = selectedChoice.action;
+                    form.submit();
+                }
             }
         });
     </script>
+
 
     {% else %}
     <div class="row mt-4">
