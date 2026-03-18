@@ -396,7 +396,7 @@ def main(request):
         context['npc_image'] = 'merchant.png'
         context['npc_dialogue'] = (
             "This is it, Dragonslayer. I can go no further. Stock up now, for what lies beyond this door is nightmares made flesh. May fortune favor you. "
-            "(Click 'SHOP' in the top right to trade, then press Enter to proceed)"
+            "(Click 'SHOP' in the top right to trade"
         )
 
 
