@@ -48,7 +48,7 @@ def main():
             },
         )
         print(f"Item: {obj.name} ({'created' if created else 'updated'})")
-
+        
     friends = [
         # name, ability, effect_type, effect_value
         ("Phoenix", "Revive/heal support.", "HEAL", 25),

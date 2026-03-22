@@ -126,6 +126,11 @@ def perform_attack(request):
 
         enemy_type = active_encounter.enemy_type
         
+        # I had to initialise these to make heal and defence work
+        player_damage = 0
+        enemy_damage = enemy_type.damage
+        log_message = ""
+        
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
@@ -136,36 +141,33 @@ def perform_attack(request):
             
         elif action_type == "friend":
             player_friend = player.friends.filter(is_active=True).select_related("friend").first()
+            
             if not player_friend:
-                return JsonResponse({"error": "You dont have any friends :("})
+                return JsonResponse({"error": "You don't have an active friend equipped!"}, status=400)
             
             friend = player_friend.friend 
             
-            if friend.effect_type == "HEAL":
+            if friend.effect_type == "HEAL": # Phoenix
                 heal_amount = friend.effect_value
-                player.hp = min(100,player.hp + heal_amount)
-                log_message = f"{friend.name} heals you for {heal_amount} HP!"
+                player.hp = min(100, player.hp + heal_amount)
+                log_message = f"🕊️ {friend.name} heals you for {heal_amount} HP! "
                 
-            elif friend.effect_type == "DAMAGE":
-                player_damage = friend.effect_value + random.randint(10,20)
-                log_message = f"{friend.name} strikes the {enemy_type.name} for {player_damage} damage!"
+            elif friend.effect_type == "DAMAGE": # Shooter 
+                player_damage = friend.effect_value + random.randint(10, 20)
+                log_message = f"💥 {friend.name} strikes the {enemy_type.name} for {player_damage} damage! "
                 
-            elif friend.effect == "SPELL":
-                player_damage = random.randint(25,40) + (friend.effect_value * 2)
-                log_message = f"{friend.name} casts a powerful spell for {player_damage} damage!"
+            elif friend.effect_type == "SPELL": # Fairy 
+                player_damage = random.randint(25, 40) + (friend.effect_value * 2)
+                log_message = f"✨ {friend.name} casts a powerful spell for {player_damage} damage! "
                 
-            elif friend.effect == "DEFENCE":
-                friend_defensive_damage_reduction = max(0,enemy_type.damage - friend.effect_value)
-                log_message = f"{friend.name} raises a shield, reducing incoming damage by {friend.effect_value}"
-                """ I dont know where the enemy damage would be calculated but the line below would implement defense 
-                if friend_enemy_damage_override is not None:
-                enemy_damage = friend_enemy_damage_override"""
+            elif friend.effect_type == "DEFENCE": # Hulk 
+                enemy_damage = max(0, enemy_damage - friend.effect_value)
+                player_damage = random.randint(1,10) # Player does less damage while defending?
+                log_message = f"🛡️ {friend.name} toughens you up as against incoming attacks for {friend.effect_value} defence! You parried the {enemy_type.name} for {player_damage} damage!  "
                 
         else:
             player_damage = 0
             log_message = f"You did something unknown... "
-
-        enemy_damage = enemy_type.damage
 
         active_encounter.enemy_hp -= player_damage
 
@@ -229,6 +231,13 @@ def perform_attack(request):
     
     return JsonResponse({"error": "Invalid request"}, status=400)
 
+
+# Commenting this out for now
+# Seems kind of redundant because the Friend help is either altering the state of attack
+# Or adding defense to a player, so having it be its own view isnt needed
+# Because its logic is tightly coupled with perform_attack
+
+"""
 @login_required
 def friend_help(request):
     
@@ -247,8 +256,7 @@ def friend_help(request):
         
         if not active_encounter:
             return JsonResponse({"error": "You need to be in a fight for a friend to help you."}, status=400)
-            
-        
+"""        
 
 def restart_game(request):
     player = request.user.playerprofile
