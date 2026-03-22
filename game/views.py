@@ -7,11 +7,12 @@ import random
 import json  
 from .models import Encounter, EnemyType
 
+
 @login_required
 def main(request):
     if not hasattr(request.user, 'playerprofile'):
         PlayerProfile.objects.create(user=request.user)
-        return redirect('game:restart')
+        return redirect('/game/restart/')
         
     player = request.user.playerprofile
     
@@ -19,23 +20,19 @@ def main(request):
         action = request.POST.get("action")
         
         if action == "next_node":
-            if player.current_node in [141, 142]:
-                player.current_node = 15
-                player.save()
-                return redirect('game:main')
-            elif player.current_node in [91, 92]:
-                player.current_node = 10
-                player.save()
-                return redirect('game:main')
-            elif player.current_node in [181, 182]:
-                player.current_node = 19
+            if player.current_node in [121, 122]:
+                player.current_node = 13
                 player.save()
                 return redirect('game:main')
             elif player.current_node in [201, 202]:
                 player.current_node = 21
                 player.save()
                 return redirect('game:main')
-            elif player.current_node >= 30:
+            elif player.current_node in [221, 222]:
+                player.current_node = 23
+                player.save()
+                return redirect('game:main')
+            elif player.current_node >= 32:
                 return redirect('/game/restart/') 
             else:
                 player.current_node += 1
@@ -43,12 +40,12 @@ def main(request):
                 return redirect('game:main')
                 
         elif action == "ending_dragon":
-            player.current_node = 29  
+            player.current_node = 31  
             player.save()
             return redirect('game:main')
             
         elif action == "ending_hero":
-            player.current_node = 30  
+            player.current_node = 32  
             player.save()
             return redirect('game:main')
             
@@ -62,46 +59,35 @@ def main(request):
             player.save()
             return redirect('game:main')
 
-        elif action == "riddle_correct":
-            player.current_node = 141 
-            player.coins += 50 
-            player.save()
-            return redirect('game:main')
-            
-        elif action == "riddle_wrong":
-            player.current_node = 142 
-            player.save()
-            return redirect('game:main')
-
-        elif action == "hunter_opt1":
-            player.current_node = 181
-            player.save()
-            return redirect('game:main')
-
-        elif action == "hunter_opt2":
-            player.current_node = 182
-            player.hp = 1 
-            player.save()
-            return redirect('game:main')
-
         elif action == "giant_opt1":
-            player.current_node = 91
-            player.hp = max(1, player.hp - 20)
+            player.current_node = 121
+            player.hp = max(1, player.hp - 20) 
             player.save()
             return redirect('game:main')
 
         elif action == "giant_opt2":
-            player.current_node = 92
+            player.current_node = 122
             player.save()
             return redirect('game:main')
 
-        elif action == "fairy_opt1":
+        elif action == "hunter_opt1":
             player.current_node = 201
             player.save()
             return redirect('game:main')
 
-        elif action == "fairy_opt2":
+        elif action == "hunter_opt2":
             player.current_node = 202
+            player.hp = 1 
+            player.save()
+            return redirect('game:main')
+
+        elif action == "fairy_opt1":
+            player.current_node = 221
+            player.save()
+            return redirect('game:main')
+
+        elif action == "fairy_opt2":
+            player.current_node = 222
             player.hp = min(player.hp + 30, 100)
             player.save()
             return redirect('game:main')
@@ -117,6 +103,7 @@ def main(request):
         'enemy_hp_percent': 0,
     }
 
+    
     if node == 0:
         context['game_mode'] = 'story'
         context['story_texts'] = [
@@ -185,15 +172,46 @@ def main(request):
     elif node == 8:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "Through the rain, a dim lantern suddenly lit up. A short, old man wrapped in a heavy cloak and carrying a massive pack appeared out of nowhere under a nearby tree."
+            "The adrenaline faded, leaving me anxious to resolve the myriad of questions in my mind. I whispered to that mysterious soul from nowhere. I had countless things to ask: about his identity, why he chose me, and the legends of the dragons. But the soul was temperamental; my repeated attempts to converse with him yielded nothing in return.<br><br>"
+            "My heart sank, the illusion of companionship shattered. In an instant, I was alone again, as if the voice had been nothing but a hallucination. The path of a dragonslayer is solitary, a lonely trudge forward.<br><br>"
+            "The sound of broken bells pierced through the rain. I instinctively tightened my grip on my weapon. This place was desolate, unlikely to see travelers. Could it be that I had attracted a legion of skeletons?"
         ]
 
     elif node == 9:
+        context['game_mode'] = 'story'
+        context['story_texts'] = [
+            "Through the rain, a dim lantern suddenly lit up. A short old man wrapped in a heavy cloak had appeared out of nowhere under a nearby tree. I noticed several delicate bells tied to the tail of his horse, ringing out a strange melody with every movement. The hood obscured his face, and his flamboyant presence did not seem like an ordinary passerby.<br><br>"
+            "Sensing danger, I was about to take a combat stance, but the stranger laughed first.<br><br>"
+            "\"Hold your weapons, Sir Knight.\" His voice carried the icy winds of the North and the gritty taste of the badlands. Realizing I still stood motionless with suspicion, he stepped aside to reveal the packs on his horse. \"I am but a passing merchant. Why soil a brave knight's hands with my blood?\" Yet, there was no respect in his tone. \"Why doesn't the Knight peruse my wares and spare a few coins for my wine?\"<br><br>"
+            "\"He's asking to trade with you,\" the long-silent soul spoke up lazily, not giving me a chance to interrupt. \"Use the Shop button to buy something, though from what I see, your choices are quite limited.\"<br><br>"
+            "He was mocking my lack of gold. I scoffed inwardly—if this soul were some rich, powerful hedonist, why would he be wandering around me?"
+        ]
+
+    elif node == 10:
+        context['game_mode'] = 'story'
+        context['story_texts'] = [
+            "As he drew closer, I indeed saw the emblem of a merchant caravan on his bells. Caravans usually traveled in packs; I wondered why he was alone. Strangely, this thought put me slightly at ease—a mutual understanding between solitary travelers.<br><br>"
+            "While carefully inspecting his goods, I struck up a casual conversation. \"Wine? Is there a village nearby?\"<br><br>"
+            "The merchant stroked his horse's mane, his eyes glancing maliciously into the cave. Following his gaze, I saw my own steed and firmly refused, \"Not for sale.\"<br><br>"
+            "The merchant sighed in disappointment, but he didn't ignore my question. \"Follow this road straight ahead. You'll see an abandoned barn. Behind it is a winding path, and at the end of that path is a village.\"<br><br>"
+            "\"This isn't far from the dragon's lair. I thought it would be completely deserted,\" I said, taking out my map to mark the location, confused.<br><br>"
+            "The merchant fell silent. I belatedly realized he was waiting for payment to answer my next question. Watching me pat my pockets empty, he merely smiled and tapped the most valuable thing on me—my iron armor. \"Go on, Dragonslayer. We shall meet again soon enough.\"<br><br>"
+            "Humming an unknown tune, he rode off into the distance."
+        ]
+
+    elif node == 11:
+        context['game_mode'] = 'story'
+        context['story_texts'] = [
+            "The rain soon stopped. I mounted my horse and galloped along the muddy path toward the location on the map. Luck seemed to be on my side as hooves trotted briskly onto the main road, passing dense, overlapping thickets. Just as the road began to open up, my steed suddenly let out a startled snort and ground to a halt.<br><br>"
+            "The massive momentum nearly threw me from the saddle. This abnormal behavior raised my suspicions. Looking closely, I saw a row of colossal footprints imprinted in the mud ahead. Savages? I looked around frantically, but saw only layers of trees and a sprawling canopy of green; there were no signs of wild men.<br><br>"
+            "As I hesitated, a roar echoed from deep within the forest, drawing closer and startling a flock of birds into the sky. When the birds scattered, heavy footsteps pounded in my ears. I gripped my weapon, ready for battle. The first thing to catch my eye was the newcomer's green skin. But when I looked up to see his face, I was shocked to find a towering, massive green giant."
+        ]
+
+    elif node == 12:
         context['game_mode'] = 'interactive_npc'
         context['npc_name'] = 'Angry Green Giant (Hulk)'
         context['npc_image'] = 'hulk.png' 
         context['npc_dialogue'] = (
-            "Following the massive footprints in the mud, I stumbled upon a towering, green-skinned giant sitting on a fallen redwood. "
             "His muscles bulged like boulders, and his stomach let out a thunderous growl. He looked incredibly angry and hungry.\n\n"
             "Noticing my approach, he hoisted a massive boulder effortlessly and roared, 'Hulk smash! Leave Hulk alone!'"
         )
@@ -202,7 +220,7 @@ def main(request):
             {'text': 'Lower weapon and offer rations: "You look starving. Have some food."', 'action': 'giant_opt2'}
         ]
 
-    elif node == 91:
+    elif node == 121:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "I drew my sword, ready to face this behemoth. But before I could even chant a spell, the green giant let out a deafening roar and smashed the ground with his fists.",
@@ -210,7 +228,7 @@ def main(request):
             "<span style='color: darkred; font-weight: bold;'>[ 💥 WARNING: Hulk smashed! You lost 20 HP! ]</span>"
         ]
 
-    elif node == 92:
+    elif node == 122:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "I slowly lowered my sword, pulled out the dried meat and bread from my knapsack, and tossed them to the giant.",
@@ -219,20 +237,19 @@ def main(request):
             "<span style='color: green; font-weight: bold;'>[ 🤝 SUCCESS: Hulk has joined your party! You can now call upon his strength using the 'Friend' button in battles! ]</span>"
         ]
 
-    elif node == 10:
+    elif node == 13:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "I bid farewell to the mysterious merchant and stepped onto the muddy path once more.<br><br>"
-            "The rain gradually stopped. I followed the desolate trail and arrived at a ruined farm. A shivering farmer stood before it, clutching a chipped pitchfork. Tears mixed with mud as he pleaded with me, crying that his son had been dragged away by a monster roaming nearby."
+            "I arrived at a ruined farm. A shivering farmer stood before it, clutching a chipped pitchfork. Tears mixed with mud as he pleaded with me, crying that his son had been dragged away by a monster roaming nearby."
         ]
 
-    elif node == 11:
+    elif node == 14:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "A crow outside the barn let out a sudden shriek. I snapped back to reality, my eyes locked on a rotting hand thrusting out from the ruined, withered blossoms. I tightened my grip on my weapon, bracing for the fight. Having accepted the plea of the unarmed and defenseless, I could not afford to show a sliver of cowardice."
         ]
 
-    elif node == 12:
+    elif node == 15:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="ZOMBIE").first()
@@ -241,7 +258,7 @@ def main(request):
             if enemy:
                 active_encounter = Encounter.objects.create(player=player, enemy_type=enemy, enemy_hp=enemy.max_hp, status="ACTIVE")
 
-    elif node == 13:
+    elif node == 16:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "This zombie was far stronger than the skeleton from before. It reeked of nauseating rot, and every swipe carried a lethal force. I nimbly rolled to dodge its heavy blow and pierced its chest with a backhand thrust. Black blood spewed out as the massive body crashed to the ground.<br><br>"
@@ -249,7 +266,7 @@ def main(request):
             "\"Damn it, it's not dead yet!\" I gritted my teeth and raised my sword without hesitation. This time, I gave it my all, directly severing its head, completely ending the agony of this walking corpse."
         ]
 
-    elif node == 14:
+    elif node == 17:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "\"Thank you, Sir Knight... This road is filled with curses and despair, but the light in your heart will surely cleave through the darkness. Please, you must bravely carry on!\"<br><br>"
@@ -257,16 +274,13 @@ def main(request):
             "\"Looks like you took down a big one, didn't you?\" The merchant smiled, laying out his wares."
         ]
 
-    elif node == 15:
+    elif node == 18:
         context['game_mode'] = 'npc'
         context['npc_name'] = 'Mysterious Wandering Merchant'
         context['npc_image'] = 'merchant.png'
-        context['npc_dialogue'] = (
-            "My wares are at your disposal, Dragonslayer. Need anything? "
-            "(Click 'SHOP' in the top right to trade, then press Enter to leave)"
-        )
+        context['npc_dialogue'] = "My wares are at your disposal, Dragonslayer. Need anything? (Click 'SHOP' in the top right to trade, then press Enter to leave)"
 
-    elif node == 16:
+    elif node == 19:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "As my journey deepened, I discovered that this cursed land was not solely inhabited by monsters. Passing through a misty forest, I encountered a bard wearing a tall hat sitting on a tree stump. He insisted on having me guess a riddle.<br><br>"
@@ -275,13 +289,7 @@ def main(request):
             "After I correctly answered his tricky riddles, he laughed heartily and pulled a crimson egg from his coat, tossing it to me. \"Well done! This Phoenix chick will be your most loyal companion. Don't be fooled by its current state as an egg; its flames can dispel any gloom.\""
         ]
 
-    elif node == 17:
-        context['game_mode'] = 'story'
-        context['story_texts'] = [
-            "(The story of the Hunter unfolds here...)"
-        ]
-
-    elif node == 18:
+    elif node == 20:
         context['game_mode'] = 'interactive_npc'
         context['npc_name'] = 'Lost Tourists'
         context['npc_image'] = 'hunter.png'
@@ -296,7 +304,7 @@ def main(request):
             {'text': '"Do I look like someone who knows the way?" (Roll eyes)', 'action': 'hunter_opt2'}
         ]
 
-    elif node == 181:
+    elif node == 201:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "I never fancied myself a man of strict etiquette, but the stranger was overwhelmingly polite. Facing a pair of eyes that seemed capable of piercing through everything, I grew nervous for no reason, only to belatedly find my own reaction amusing. I bowed slightly, offering a standard knight's salute to both strangers.",
@@ -310,9 +318,7 @@ def main(request):
             "He quickened his pace to catch up with his companion, leaving me standing alone, lost in thought as I watched their retreating silhouettes."
         ]
 
-
-
-    elif node == 182:
+    elif node == 202:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "\"Do I look like someone who knows the way around this cursed land?\" I scoffed and rolled my eyes impatiently.",
@@ -324,17 +330,17 @@ def main(request):
             "<span style='color: darkred; font-weight: bold;'>[ 🩸 WARNING: You were punished by Hannibal for your rudeness! HP reduced to 1! ]</span>"
         ]
 
-    elif node == 19:
+    elif node == 21:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Next, by an abandoned wizard tower deep in the forest, a white-bearded old mage blocked my path. He inspected the longsword I had just sharpened and shook his head: \"Empty swordplay won't kill a dragon, child.\"<br><br>"
             "He tapped my forehead with his bony finger. In an instant, a scorching warmth flooded my veins. \"I'll teach you the 'Fireball' spell. Combined with your sword, it's enough to burn those fire-fearing monsters to ashes.\""
         ]
 
-    elif node == 20:
+    elif node == 22:
         context['game_mode'] = 'interactive_npc'
         context['npc_name'] = 'Pond Fairy'
-        context['npc_image'] = 'fairy.png'
+        context['npc_image'] = 'fairy.png' 
         context['npc_dialogue'] = (
             "Deep within a serene glade, the fog parted to reveal a crystal-clear pond. "
             "A Fairy with iridescent wings hovered above the water, looking at my blood-stained armor with pity.\n\n"
@@ -345,7 +351,7 @@ def main(request):
             {'text': 'Accept gratefully: "I would be honored, gentle spirit."', 'action': 'fairy_opt2'}
         ]
 
-    elif node == 201:
+    elif node == 221:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "I shook my head, gripping my sword tighter. \"The path of a dragonslayer is a solitary one. I cannot risk others getting hurt.\"",
@@ -353,7 +359,7 @@ def main(request):
             "She dissolved into glowing motes of light and vanished into the pond, leaving me alone once more."
         ]
 
-    elif node == 202:
+    elif node == 222:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "I bowed respectfully. \"I would be honored, gentle spirit. The darkness ahead is too thick for one man to pierce alone.\"",
@@ -362,14 +368,14 @@ def main(request):
             "<span style='color: green; font-weight: bold;'>[ ✨ SUCCESS: Fairy has joined your party! You recovered 30 HP. You can summon her healing magic using the 'Friend' button! ]</span>"
         ]
 
-    elif node == 21:
+    elif node == 23:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Bidding farewell to the mage, I met a man in a grey cloak at the forest's exit. He claimed to be a local guide who knew a shortcut to avoid large monster lairs. Having met so many friendly faces along the way, my tensed nerves relaxed slightly, and I followed him without suspicion.<br><br>"
             "He led me through a dazzling, breathtaking sea of flowers. The overwhelming fragrance almost drowned me. However, just as I was mesmerized by this rare beauty, the ground beneath my feet felt wrong. The illusion faded like ripples on water. There was no sea of flowers."
         ]
 
-    elif node == 22:
+    elif node == 24:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Thick mist veiled the swamp. I stepped into a muddy hollow, and no matter how hard I struggled, I couldn't pull my trapped boot free. Just as frustration took hold, dormant vines silently coiled around my ankle. I tried to dispel them with an incantation, but it backfired; I was bound fast to the spot, entirely immobilized.<br><br>"
@@ -381,7 +387,7 @@ def main(request):
             "I lunged at the wizard. \"I only care about my true heart, and it tells me that all of this is worth it.\""
         ]
 
-    elif node == 23:
+    elif node == 25:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="witch").first()
@@ -390,23 +396,19 @@ def main(request):
             if enemy:
                 active_encounter = Encounter.objects.create(player=player, enemy_type=enemy, enemy_hp=enemy.max_hp, status="ACTIVE")
 
-    elif node == 24:
+    elif node == 26:
         context['game_mode'] = 'npc'
         context['npc_name'] = 'Merchant (Final Stop)'
         context['npc_image'] = 'merchant.png'
-        context['npc_dialogue'] = (
-            "This is it, Dragonslayer. I can go no further. Stock up now, for what lies beyond this door is nightmares made flesh. May fortune favor you. "
-            "(Click 'SHOP' in the top right to trade"
-        )
+        context['npc_dialogue'] = "This is it, Dragonslayer. I can go no further. Stock up now, for what lies beyond this door is nightmares made flesh. May fortune favor you. (Click 'SHOP' in the top right to trade, then press Enter to proceed)"
 
-
-    elif node == 25:
+    elif node == 27:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "(Seeing the signposts and warnings left behind by previous players... The final destination is near.)"
         ]
 
-    elif node == 26:
+    elif node == 28:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "The shattered signpost bore the final, desperate words carved by a previous hero, as a biting wind howled through the hall.<br><br>"
@@ -414,7 +416,7 @@ def main(request):
             "Coiled upon the throne sat the sky-blotting, pureblood red dragon. It slowly opened its dark-gold slitted pupils, eyeing me—its uninvited guest—with mocking amusement. The air was thick with the stench of sulfur and despair. The final trial had begun!"
         ]
 
-    elif node == 27:
+    elif node == 29:
         context['game_mode'] = 'combat'
         if not active_encounter:
             enemy = EnemyType.objects.filter(name__iexact="dragon").first()
@@ -423,10 +425,10 @@ def main(request):
             if enemy:
                 active_encounter = Encounter.objects.create(player=player, enemy_type=enemy, enemy_hp=enemy.max_hp, status="ACTIVE")
 
-    elif node == 28:
+    elif node == 30:
         context['game_mode'] = 'decision'  
 
-    elif node == 29:
+    elif node == 31:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "As if possessed, I walked toward the dragon's corpse and reached out to gouge out the dark-gold dragon eye radiating a beguiling glow.<br><br>"
@@ -434,7 +436,7 @@ def main(request):
             "Gazing down at the insignificant human capital, a deafening roar tore from my throat... The dragonslayer had ultimately become the next evil dragon to rule the world.<br><br><span style='color:darkred; font-weight:bold;'>【 BAD ENDING: Gaze of the Abyss 】</span><br><br>(Press Enter to restart)"
         ]
 
-    elif node == 30:
+    elif node == 32:
         context['game_mode'] = 'story'
         context['story_texts'] = [
             "Resisting the eerie temptation radiating from the dragon's eye, I raised my staff, channeled every last drop of my mana, and unleashed the most scorching fireball upon the dragon's corpse.<br><br>"

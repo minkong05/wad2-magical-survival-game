@@ -180,3 +180,41 @@ body {
 #enemyHpBar {
     transition: width 0.5s ease-in-out; 
 }
+
+
+
+.story-scroll-area {
+    height: 350px; 
+    overflow-y: scroll !important; 
+    padding-right: 15px; 
+    text-align: left;
+    
+    scrollbar-width: auto !important; 
+    scrollbar-color: #99978f transparent;
+}
+
+.story-scroll-area::-webkit-scrollbar {
+    width: 12px !important; 
+    display: block !important; 
+}
+
+.story-scroll-area::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 6px;
+    border: 1px inset rgba(0, 0, 0, 0.2);
+}
+
+.story-scroll-area::-webkit-scrollbar-thumb {
+    background-color: #a5a299 !important; 
+    border-radius: 6px;
+    border: 2px solid rgba(253, 245, 230, 0.5) !important; 
+}
+
+.story-scroll-area::-webkit-scrollbar-thumb:hover {
+    background-color: #ecdca8 !important; 
+}
+
+.hero-img, .enemy-img {
+    mix-blend-mode: multiply; 
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); 
+}

@@ -4,7 +4,7 @@
 {% block title %}Main Game{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/main.css' %}?v=1">
+<link rel="stylesheet" href="{% static 'css/main.css' %}?v=4">
 {% endblock %}
 
 {% block content %}
@@ -32,8 +32,8 @@
         <div class="col-md-3 left-panel"></div>
         <div class="col-md-6 center-panel">
             <div class="mt-2 elegant-story-box">
-                <div id="story-scroll-container" style="height: 350px; overflow-y: auto; padding-right: 15px; text-align: left;">
-                    <p id="story-text-display" class="fs-5 mb-4" style="line-height: 1.8; color: #333;"></p>
+                <div id="story-scroll-container" class="story-scroll-area">
+                    <p id="story-text-display" class="mb-4"></p>
                 </div>
                 <p class="text-muted text-center mt-4" style="animation: blink 2s infinite; font-size: 0.9em;">
                     <i>[ Press <strong>Enter</strong> to continue ]</i>
@@ -85,8 +85,8 @@
         <div class="col-md-8 text-center">
             <div class="mt-2 elegant-story-box text-center">
                 <h3 class="fw-bold mb-4" style="color: #8B0000;">The end game</h3>
-                <p class="fs-5 mb-5" style="line-height: 1.8; color: #333;">
-                    The dragon collapsed suddenly, and dark golden blood flowed on the gold coins.<br>I stand in front of its huge corpse, feeling the dark power that is enough to swallow people's hearts.<br>Now, it's time to decide...
+                <p id="story-text-display" class="mb-5 text-center">
+                    The dragon collapsed suddenly, and dark golden blood flowed on the gold coins.<br><br>I stand in front of its huge corpse, feeling the dark power that is enough to swallow people's hearts.<br><br>Now, it's time to decide...
                 </p>
                 <div class="mt-5 fs-4" style="line-height: 2.5; text-align: left; display: inline-block;">
                     <span style="color: #8B0000; font-weight: bold; animation: blink 3s infinite;">
@@ -129,16 +129,20 @@
                 </h5>
             </div>
         </div>
+        
         <div class="col-md-6 center-panel">
-            <div class="mt-2 elegant-story-box" style="min-height: 250px;">
-                <p id="story-text-display" class="fs-4 mt-2" style="color: #333; line-height: 1.8; font-family: 'EB Garamond', serif;">
-                    "{{ npc_dialogue }}"
-                </p>
-                <p class="text-muted text-center mt-5" style="animation: blink 2s infinite; font-size: 0.9em;">
-                    <i>[ Press <strong>Enter</strong> to leave ]</i>
-                </p>
+            <div class="mt-2 elegant-story-box">
+                <div class="story-scroll-area">
+                    <p id="story-text-display" class="mt-2">
+                        {{ npc_dialogue|linebreaksbr }}
+                    </p>
+                    <p class="text-muted text-center mt-5" style="animation: blink 2s infinite; font-size: 0.9em;">
+                        <i>[ Press <strong>Enter</strong> to leave ]</i>
+                    </p>
+                </div>
             </div>
         </div>
+        
         <div class="col-md-3 right-panel">
             <div class="player-info text-center">
                 <img src="{% static 'images/knight.png' %}?v=1" class="img-fluid hero-img" alt="Hero">
@@ -168,17 +172,19 @@
         </div>
 
         <div class="col-md-6 center-panel">
-            <div class="mt-2 elegant-story-box" style="min-height: 250px;">
-                <p class="fs-4 mt-2 mb-4" style="color: #333; line-height: 1.8; font-family: 'EB Garamond', serif;">
-                    "{{ npc_dialogue }}"
-                </p>
-                
-                <div class="mt-4 fs-5" style="line-height: 2.2; text-align: left; display: inline-block;">
-                    {% for choice in choices %}
-                        <span style="color: #8B0000; font-weight: bold;">
-                            [ Press <strong>{{ forloop.counter }}</strong> ] <span style="color: #333;">{{ choice.text }}</span>
-                        </span><br>
-                    {% endfor %}
+            <div class="mt-2 elegant-story-box">
+                <div class="story-scroll-area">
+                    <p id="story-text-display" class="mt-2 mb-4">
+                        {{ npc_dialogue|linebreaksbr }}
+                    </p>
+                    
+                    <div class="mt-4 fs-5" style="line-height: 2.2; text-align: left; display: inline-block;">
+                        {% for choice in choices %}
+                            <span style="color: #8B0000; font-weight: bold; cursor: pointer;">
+                                [ Press <strong>{{ forloop.counter }}</strong> ] <span style="color: #333;">{{ choice.text }}</span>
+                            </span><br>
+                        {% endfor %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -224,7 +230,6 @@
             }
         });
     </script>
-
 
     {% else %}
     <div class="row mt-4">
