@@ -147,10 +147,27 @@ def perform_attack(request):
             
             friend = player_friend.friend 
             
-            if friend.effect_type == "HEAL": # Phoenix
+            if friend.effect_type == "HEAL":
                 heal_amount = friend.effect_value
                 player.hp = min(100, player.hp + heal_amount)
-                log_message = f"🕊️ {friend.name} heals you for {heal_amount} HP! "
+                player.hp = max(0, player.hp - enemy_damage)
+                log_message = f"🕊️ {friend.name} heals you for {heal_amount} HP! The {enemy_type.name} hits back for {enemy_damage} damage."
+                
+                game_status = "ongoing"
+                if player.hp <= 0:
+                    active_encounter.status = "LOST"
+                    log_message += f"<br><br>☠️ You have been slain by the {enemy_type.name}..."
+                    game_status = "lost"
+
+                active_encounter.save()
+                player.save()
+
+                return JsonResponse({
+                    "player_hp": player.hp,
+                    "enemy_hp_percent": int((active_encounter.enemy_hp / enemy_type.max_hp) * 100),
+                    "log_message": log_message,
+                    "game_status": game_status
+                })
                 
             elif friend.effect_type == "DAMAGE": # Shooter 
                 player_damage = friend.effect_value + random.randint(10, 20)
@@ -179,6 +196,7 @@ def perform_attack(request):
             if enemy_type.name == "ZOMBIE" and enemy_type.can_revive:
                 active_encounter.enemy_hp = enemy_type.max_hp // 2 
                 enemy_type.can_revive = False 
+                enemy_type.save()
                 log_message += f"<br><br>🧟‍♂️ Oh no! The Zombie reanimates from the dead!"
                 game_status = "ongoing"
                 
