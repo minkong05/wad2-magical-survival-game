@@ -65,6 +65,11 @@ body {
     color: #e0e0e0; 
 }
 
+.enemy-section {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
 .log-warning {
     color: #7f1d1d; 
     font-style: italic; 
@@ -216,5 +221,7 @@ body {
 
 .hero-img, .enemy-img {
     mix-blend-mode: multiply; 
+    max-height: 250px; 
+    object-fit: contain; 
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); 
 }
