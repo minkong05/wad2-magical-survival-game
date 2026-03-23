@@ -5,7 +5,7 @@ from .models import InventoryItem, Item, PlayerProfile
 from django.http import JsonResponse
 import random
 import json  
-from .models import Encounter, EnemyType
+from .models import Encounter, EnemyType, Signpost
 
 @login_required
 def main(request):
@@ -45,6 +45,14 @@ def main(request):
                 return redirect('game:main')
             elif player.current_node == 251:
                 player.current_node = 26
+                player.save()
+                return redirect('game:main')
+            elif player.current_node == 29:
+                player.current_node = 291
+                player.save()
+                return redirect('game:main')
+            elif player.current_node == 291:
+                player.current_node = 30
                 player.save()
                 return redirect('game:main')
             elif player.current_node >= 33:
@@ -125,6 +133,15 @@ def main(request):
             player.hp = min(player.hp + 20, 100) 
             player.save()
             return redirect('game:main')
+        
+        elif action == "leave_signpost":
+            message = request.POST.get("signpost_message", "").strip()
+            ending_type = request.POST.get("ending_type", "Unknown")
+            
+            if message:
+                Signpost.objects.create(message=message, ending_type=ending_type)
+            
+            return redirect('/game/restart/')
 
         elif action == "submit_riddle":
             answer = request.POST.get("riddle_answer", "").strip().lower()
@@ -621,6 +638,22 @@ def main(request):
             "They were not signposts at all. They were rusted, shattered swords, cracked crests, and bleached bones half-buried in the volcanic ash. I realized then that I was not the only dragonslayer to reach this place. These skeletons were the remnants of beguiled minds, unfulfilled ambitions, and broken hopes."
         ]
 
+    elif node == 291:
+        context['game_mode'] = 'story'
+        
+        signposts = Signpost.objects.order_by('?')[:40]
+        
+        if signposts.exists():
+            messages_text = "I crouched down and wiped the volcanic ash from the cracked stones. I could barely make out the bloodstained final words left by the predecessors:<br>"
+            for sp in signposts:
+                messages_text += f"<br><span style='color: #d3d3d3; font-style: italic;'>「 {sp.message} 」</span>"
+        else:
+            messages_text = "<span style='color: #8b8b83; font-style: italic;'>The wind and snow had completely erased any text on the stones. I could read nothing.</span>"
+
+        context['story_texts'] = [
+            messages_text
+        ]
+
     elif node == 30:
         context['game_mode'] = 'story'
         context['story_texts'] = [
@@ -659,19 +692,21 @@ def main(request):
         ]
 
     elif node == 33:
-        context['game_mode'] = 'story'
+        context['game_mode'] = 'ending_signpost' 
+        context['ending_type'] = 'Bad Ending'
         context['story_texts'] = [
             "As if possessed, I walked toward the dragon's corpse and reached out to gouge out the dark-gold dragon eye radiating a beguiling glow.<br><br>"
             "In an instant, a frenzied dark power surged through my veins. My skin began to sprout hard, dark-red scales; the bones in my back tore apart violently as a pair of sky-blotting fleshy wings burst from my flesh.",
-            "Gazing down at the insignificant human capital, a deafening roar tore from my throat... The dragonslayer had ultimately become the next evil dragon to rule the world.<br><br><span style='color:darkred; font-weight:bold;'>【 BAD ENDING: Gaze of the Abyss 】</span><br><br>(Press Enter to restart)"
+            "Gazing down at the insignificant human capital, a deafening roar tore from my throat... The dragonslayer had ultimately become the next evil dragon to rule the world.<br><br><span style='color:darkred; font-weight:bold;'>【 BAD ENDING: Gaze of the Abyss 】</span><br><br>The cycle continues. Leave your dying words for the next Dragonslayer:"
         ]
 
     elif node == 34:
-        context['game_mode'] = 'story'
+        context['game_mode'] = 'ending_signpost' 
+        context['ending_type'] = 'True Ending'
         context['story_texts'] = [
             "Resisting the eerie temptation radiating from the dragon's eye, I raised my staff, channeled every last drop of my mana, and unleashed the most scorching fireball upon the dragon's corpse.<br><br>"
             "The raging inferno reduced the dragon's bones and its wicked curses to ashes. Sunlight finally pierced through the gloom that had shrouded the royal capital for years.",
-            "I dragged my exhausted body back to the town. This time, there was no superficial honor guard—only the heartfelt cheers and warm tears of the reborn commoners... The spark of hope had finally been rekindled in this era.<br><br><span style='color:goldenrod; font-weight:bold;'>【 TRUE ENDING: Breaking Dawn 】</span><br><br>(Press Enter to restart)"
+            "I dragged my exhausted body back to the town. This time, there was no superficial honor guard—only the heartfelt cheers and warm tears of the reborn commoners... The spark of hope had finally been rekindled in this era.<br><br><span style='color:goldenrod; font-weight:bold;'>【 TRUE ENDING: Breaking Dawn 】</span><br><br>Your journey is over. Leave a message of guidance for the next Dragonslayer:"
         ]
 
     if context['game_mode'] == 'combat':
