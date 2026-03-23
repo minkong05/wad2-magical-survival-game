@@ -107,7 +107,6 @@ def character_select(request):
         "choices": PlayerProfile.CLASS_CHOICES,
         "current": profile.class_type,
     })
-
 @login_required
 def perform_attack(request):
     if request.method == "POST":
@@ -126,19 +125,25 @@ def perform_attack(request):
 
         enemy_type = active_encounter.enemy_type
         
-        # I had to initialise these to make heal and defence work
         player_damage = 0
         enemy_damage = enemy_type.damage
         log_message = ""
-        
+
+        if enemy_type.name.upper() == "WITCH" and action_type == "magic":
+            return JsonResponse({"error": "The dark wizard's shadow power suppresses your magic and makes it impossible to cast it!"}, status=400)
+
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
             
         elif action_type == "fight":
             player_damage = random.randint(10, 20)
-            log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
-            
+            if enemy_type.name.upper() == "DRAGON":
+                player_damage = player_damage // 2
+                log_message = f"⚔️ The dragon soars into the sky! Your sword barely scratches its hard scales for {player_damage} damage! "
+            else:
+                log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
+                
         elif action_type == "friend":
             player_friend = player.friends.filter(is_active=True).select_related("friend").first()
             
@@ -164,7 +169,7 @@ def perform_attack(request):
 
                 return JsonResponse({
                     "player_hp": player.hp,
-                    "enemy_hp_percent": int((active_encounter.enemy_hp / enemy_type.max_hp) * 100),
+                    "enemy_hp_percent": int((active_encounter.enemy_hp / enemy_type.max_hp) * 100) if enemy_type.max_hp > 0 else 0,
                     "log_message": log_message,
                     "game_status": game_status
                 })
@@ -179,48 +184,36 @@ def perform_attack(request):
                 
             elif friend.effect_type == "DEFENCE": # Hulk 
                 enemy_damage = max(0, enemy_damage - friend.effect_value)
-                player_damage = random.randint(1,10) # Player does less damage while defending?
-                log_message = f"🛡️ {friend.name} toughens you up as against incoming attacks for {friend.effect_value} defence! You parried the {enemy_type.name} for {player_damage} damage!  "
+                player_damage = random.randint(1, 10) 
+                log_message = f"🛡️ {friend.name} toughens you up against incoming attacks for {friend.effect_value} defence! You parried the {enemy_type.name} for {player_damage} damage! "
                 
         else:
             player_damage = 0
             log_message = f"You did something unknown... "
 
         active_encounter.enemy_hp -= player_damage
-
         game_status = "ongoing"
 
         if active_encounter.enemy_hp <= 0:
             
-            # Zombie revive
-            if enemy_type.name == "ZOMBIE" and enemy_type.can_revive:
+            revive_key = f"zombie_revived_{active_encounter.id}"
+            
+            if enemy_type.name.upper() == "ZOMBIE" and not request.session.get(revive_key, False):
                 active_encounter.enemy_hp = enemy_type.max_hp // 2 
-                enemy_type.can_revive = False 
-                enemy_type.save()
-                log_message += f"<br><br>🧟‍♂️ Oh no! The Zombie reanimates from the dead!"
+                request.session[revive_key] = True 
+                
+                log_message += f"<br><br>🧟‍♂️ <i>Just as you were about to breathe a sigh of relief, a bone-chilling sound of skeletal restructuring came from behind... The corpse twitched bizarrely and reanimated from the dead!</i>"
                 game_status = "ongoing"
                 
             else:
                 active_encounter.enemy_hp = 0
                 active_encounter.status = "WON" 
             
-                # Rewards
                 player.monsters_defeated += 1
                 player.coins += enemy_type.reward_coins
             
                 log_message += f"<br><br>✨ Victory! The {enemy_type.name} has been defeated! You earned {enemy_type.reward_coins} coins."
                 game_status = "won"
-            
-                # Dropped item determination
-                if enemy_type.drops_item:
-                    inv_item, created = InventoryItem.objects.get_or_create(
-                        player=player, 
-                        item=enemy_type.drops_item,
-                        defaults={'quantity': 0}
-                    )
-                    inv_item.quantity += 1
-                    inv_item.save()
-                    log_message += f"<br>🎁 Loot! You found a {enemy_type.drops_item.name} and put it in your inventory!"
 
         else:
             player.hp -= enemy_damage
@@ -232,7 +225,6 @@ def perform_attack(request):
                 log_message += f"<br><br>☠️ You have been slain by the {enemy_type.name}..."
                 game_status = "lost"
 
-        #Save
         active_encounter.save()
         player.save()
 
@@ -247,34 +239,7 @@ def perform_attack(request):
             "game_status": game_status
         })
     
-    return JsonResponse({"error": "Invalid request"}, status=400)
-
-
-# Commenting this out for now
-# Seems kind of redundant because the Friend help is either altering the state of attack
-# Or adding defense to a player, so having it be its own view isnt needed
-# Because its logic is tightly coupled with perform_attack
-
-"""
-@login_required
-def friend_help(request):
-    
-    player = request.user.playerprofile
-    friend = request.user.playerprofile
-
-    if request.method == "POST":
-        
-        try:
-            data = json.loads(request.body)
-            action_type = data.get("action_type", "friend") 
-        except json.JSONDecodeError:
-            action_type = "friend"
-            
-        active_encounter = friend.encounters.filter(status="ACTIVE").first()
-        
-        if not active_encounter:
-            return JsonResponse({"error": "You need to be in a fight for a friend to help you."}, status=400)
-"""        
+    return JsonResponse({"error": "Invalid request"}, status=400)      
 
 def restart_game(request):
     player = request.user.playerprofile
