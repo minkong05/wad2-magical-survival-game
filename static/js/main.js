@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
     const enemyHpBar = document.getElementById("enemyHpBar");
+    const friendBtn = document.getElementById("friendBtn");  
     const heroHpText = document.getElementById("heroHpText");
     const battleLog = document.getElementById("battleLog");
 
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (fightBtn) fightBtn.disabled = true;
         if (magicBtn) magicBtn.disabled = true;
+        if (friendBtn) friendBtn.disabled = true;
 
 
         fetch("/game/api/attack/", { 
@@ -114,6 +116,8 @@ document.addEventListener("DOMContentLoaded", function() {
     function enableButtons() {
         if (fightBtn) fightBtn.disabled = false;
         if (magicBtn) magicBtn.disabled = false;
+        if (friendBtn) friendBtn.disabled = false; 
+
     }
 
 
@@ -127,5 +131,12 @@ document.addEventListener("DOMContentLoaded", function() {
         magicBtn.addEventListener("click", function() {
             performAction("magic"); 
         });
+    }
+
+    if (friendBtn) {
+        friendBtn.addEventListener("click", function() {
+            performAction("friend"); 
+        });
+
     }
 });
