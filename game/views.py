@@ -23,7 +23,7 @@ def main(request):
                 player.current_node = 13
                 player.save()
                 return redirect('game:main')
-            elif player.current_node in [201, 202,214]:
+            elif player.current_node in [201, 202,214,215]:
                 player.current_node = 23
                 player.save()
                 return redirect('game:main')
@@ -37,6 +37,14 @@ def main(request):
                 return redirect('game:main')
             elif player.current_node in [241, 242]:
                 player.current_node = 25
+                player.save()
+                return redirect('game:main')
+            elif player.current_node == 25:
+                player.current_node = 251
+                player.save()
+                return redirect('game:main')
+            elif player.current_node == 251:
+                player.current_node = 26
                 player.save()
                 return redirect('game:main')
             elif player.current_node >= 33:
@@ -128,7 +136,8 @@ def main(request):
             elif player.current_node == 213 and answer == "hope":
                 player.current_node = 214
             else:
-                request.session['riddle_wrong'] = True
+                player.current_node = 215
+                player.coins += 10
                 
             player.save()
             return redirect('game:main')
@@ -403,7 +412,7 @@ def main(request):
             "After several intense exchanges, there was no flashy magic—only the pure collision of strength and muscle memory. My desperate, completely unhinged fighting style finally forced the captain to take a half-step back after a heavy clash.<br><br>"
             "He panted heavily, suddenly sheathing his broadsword. \"Hahaha! That's the spirit!\" A booming laugh erupted from his rugged face, all previous hostility vanishing into thin air. \"The combat forms taught by the Royal Knights haven't changed in over a decade.\"<br><br>"
             "He stepped forward, clapping my shoulder with astonishing force. \"I misjudged you, Dragonslayer. Forgive a father's caution.\" He paused, pressing a bone whistle into my hand. \"I admire a brave soul like you. You bested me. In return, I'm willing to lend a hand when you face the dragon. Whenever you need me, blow this, and I will fight by your side.\"<br><br>"
-            "<span style='color: green; font-weight: bold;'>[ 🤝 SUCCESS: Guard Captain Hulter has joined your party! ]</span>"
+            "<span style='color: green; font-weight: bold;'>[ 🤝 SUCCESS: Guard Captain Shooter has joined your party! ]</span>"
         ]
 
     elif node == 21:
@@ -440,6 +449,19 @@ def main(request):
             "The next morning, a crowd gathered before the village's wooden gates. The villagers called my name, pressing coarse rations into my pack. The guard captain stood at the forefront.",
             "\"The road ahead... even I have never tread it,\" the captain gripped my forearm firmly. \"Remember that look in your eyes last night. Don't die to those monsters.\"",
             "I nodded and mounted my horse. Facing the crisp morning breeze, I didn't look back, riding straight into the depths of the Dragon's Valley."
+        ]
+
+    elif node == 215:
+        context['game_mode'] = 'story'
+        context['npc_name'] = 'Mysterious Bard'
+        context['npc_image'] = 'bard.png'
+        context['story_texts'] = [
+            "The bard stopped strumming his lute, a profound sense of pity flashing in his cloudy eyes.",
+            "\"What a pity. It seems you are not the one who can pierce through the mist.\" He sighed, fished a few coins from his coat, and tossed them onto the table. \"Take this money and buy yourself a good drink, Dragonslayer. This journey might be too heavy a burden for you.\"",
+            "With that, he pulled down the brim of his hat, slung his battered lute over his shoulder, and walked out of the tavern without looking back, leaving me stunned in place.",
+            "<span style='color: gold; font-weight: bold;'>[ 💰 The Bard looks at you with pity, leaves you 10 coins, and departs. ]</span>",
+            "I silently gathered the coins and returned to the guest room, washing away the blood and grime. This rare peace allowed me a long-overdue, dreamless sleep, free from the roars of dragons.",
+            "The next morning, bidding farewell to the enthusiastic villagers and the guard captain, I mounted my horse. Facing the crisp morning breeze, I didn't look back, riding straight into the depths of the Dragon's Valley."
         ]
 
     elif node == 22:
@@ -544,13 +566,17 @@ def main(request):
     elif node == 25:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "Bidding farewell to the Fairy, I gathered my gear by the strange, crystal-clear spring. Just as I stepped out of the dead woods, a man wrapped in a coarse gray cloak blocked my path. He was crouching on the ground, inspecting animal tracks, and stood up alertly at the sound of my footsteps. He looked travel-worn, his face slightly weathered beneath the hood, carrying the scent of moss and foliage from years of navigating the woods.<br><br>"
-            "\"The path ahead is blocked, Lord Knight,\" he clapped the dirt from his hands, his tone carrying the exhaustion of a wanderer, along with a perfectly measured trace of goodwill. \"The main road was claimed by a pack of two-headed beasts for their nest last night. I am a ranger from the village, planning to detour. If you don't mind, I know a hidden trail that can bypass their sight entirely undetected.\"<br><br>"
-            "Perhaps it was the recent blessing from the Fairy, or perhaps I had met too many friendly faces along the way—even that stubborn guard captain had extended a hand in the end. This succession of goodwill acted like a mild anesthetic, quietly softening the intensely taut nerves I had harbored since entering the wilds.<br><br>"
-            "The soul in my mind let out a very faint, cold snort, seemingly scoffing at this sudden approach from a stranger. But I assumed he was just irritated that our rare peace was interrupted. Basking in the comfort of healing wounds and an optimistic outlook, I paid no mind to his ambiguous reaction. Tossing two silver coins into the guide's palm, I followed him without the slightest guard.<br><br>"
-            "The gray cloak led me deeper into the uncharted terrain. The damp soil was gradually replaced by a bizarre, vibrant vegetation. Suddenly, the view opened up, and a dazzling, breathtaking sea of flowers stretched before me. The blossoms were monstrously huge, blooming in sickly shades of scarlet and violet. The sickeningly sweet, almost bitter floral scent rushed at me, nearly suffocating me in its heavy air.<br><br>"
-            "How could such beauty exist in this desolate, cursed land? For a moment, I was completely mesmerized.<br><br>"
-            "\"Fool.\" The soul's sharp rebuke exploded in my mind.<br><br>"
+            "Bidding farewell to the Fairy, I gathered my gear by the strange, crystal-clear spring. Just as I stepped out of the dead woods, a man wrapped in a coarse gray cloak blocked my path. He was crouching on the ground, inspecting animal tracks, and stood up alertly at the sound of my footsteps. He looked travel-worn, his face slightly weathered beneath the hood, carrying the scent of moss and foliage from years of navigating the woods.",
+            "\"The path ahead is blocked, Lord Knight.\" He clapped the dirt from his hands, his tone carrying the exhaustion of a wanderer. \"The main road was claimed by a pack of two-headed beasts for their nest last night. I am a ranger from the village, planning to detour. If you don't mind, I know a hidden trail that can bypass their sight entirely undetected.\"",
+            "The soul in my mind let out a very faint, cold snort, seemingly scoffing at this sudden approach from a stranger."
+        ]
+
+    elif node == 251:
+        context['game_mode'] = 'story'
+        context['story_texts'] = [
+            "The gray cloak led me deeper into uncharted terrain. The damp soil was gradually replaced by a bizarre, vibrant vegetation. Suddenly, the view opened up, and a dazzling, breathtaking sea of flowers stretched before me. The blossoms were monstrously huge, blooming in sickly shades of scarlet and violet. The sickeningly sweet, almost bitter floral scent rushed at me, nearly suffocating me in its heavy air.",
+            "How could such beauty exist in this desolate, cursed land? For a moment, I was completely mesmerized.",
+            "\"Fool.\" The soul's sharp rebuke exploded in my mind.",
             "In a flash, my intoxicated mind snapped awake. The texture of the supposedly soft floral carpet beneath my boots shifted instantly—it became viscous, slimy, carrying a malicious suction. I looked down in horror as the mirage before my eyes burned away like a scorched canvas. There was no sea of flowers. It was a putrid, stinking swamp."
         ]
 
@@ -578,21 +604,32 @@ def main(request):
     elif node == 28:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "This is it, Dragonslayer. I can go no further. Stock up now, for what lies beyond this door is nightmares made flesh. May fortune favor you. (Click 'SHOP' in the top right to trade, then press Enter to proceed)"
+            "With the dark wizard's body dissolving into a puddle of foul, viscous black sludge, the oppressive mist finally cleared.",
+            "I leaned heavily against my sword, gasping for air as I forced my exhausted body to stay upright. Just then, the familiar scent of old parchment and wild grit wafted through the air. The merchant's lantern flickered at the edge of the mist, and he casually strolled to the edge of the devastated swamp.",
+            "\"It seems you are far more resilient than I imagined, Dragonslayer,\" he said, assessing me with his usual calm demeanor. \"The wizard is dead. The shadow looming over the village has been cleared.\"",
+            "\"The Dragon's Valley lies just ahead.\" I could almost smell the damp scent of the impending storm. \"I suppose this is where we part ways. Your 'kindred' can accompany me from here.\" I was referring to the soul that had been entrenched in my mind.",
+            "The merchant paused, a profound confusion seeping from beneath his hood. \"Kindred? Sir Knight, my nose smells only the stench of blood and rotting mud. Aside from the dead, what other presence could there be?\"",
+            "Suddenly, the soul in my mind, silent for so long, spoke up with extreme impatience. \"Stop wasting your breath on this coin-stinking mortal!\" His voice rattled my skull, carrying an unprecedented, oppressive urgency. \"Your destiny lies ahead! Draw your sword and sever that vile dragon's head!\"",
+            "\"It wouldn't hurt to buy some supplies before I go,\" I muttered. Defeating the wizard had completely drained me. \"This might be our final trade.\"",
+            "\"It won't be.\" The merchant unrolled his pack, patting my shoulder. \"We will meet again. Now, stock up, for what lies beyond is nightmares made flesh. \""
         ]
 
     elif node == 29:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "(Seeing the signposts and warnings left behind by previous players... The final destination is near.)"
+            "Bidding farewell to the merchant, I embarked alone on the final stretch toward the Dragon's Valley. Along the way, I saw the 'signposts' left behind by my predecessors."
+            "They were not signposts at all. They were rusted, shattered swords, cracked crests, and bleached bones half-buried in the volcanic ash. I realized then that I was not the only dragonslayer to reach this place. These skeletons were the remnants of beguiled minds, unfulfilled ambitions, and broken hopes."
         ]
 
     elif node == 30:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "The shattered signpost bore the final, desperate words carved by a previous hero, as a biting wind howled through the hall.<br><br>"
-            "I tightened my grip on the hilt of my sword, stepped over a sea of bleached bones, and pushed open the massive bronze doors.<br><br>"
-            "Coiled upon the throne sat the sky-blotting, pureblood red dragon. It slowly opened its dark-gold slitted pupils, eyeing me—its uninvited guest—with mocking amusement. The air was thick with the stench of sulfur and despair. The final trial had begun!"
+            "When I finally crested the peak and stepped onto the massive, dead altar, the thin air pressed down on me heavily—a suffocating oppression identical to the one in my nightmares. The heavens tore open, and from a deep, black vortex, a sky-blotting, ancient dragon crashed down, shattering the stone slabs beneath its feet.",
+            "It did not immediately unleash its fiery breath. Instead, it lowered its terrifying, arrogant head and stared dead at me. In that instant, my blood ran cold. Those lifeless, pale-grey eyes... like glass beads. It was that inviolable, overwhelming presence, looking down at a mortal's futile struggle with utter apathy.",
+            "\"You are finally here, my brave dragonslayer.\" A sharp spike seemed to pierce my brain. \"It has been so long since I've seen a fresh one.\"",
+            "The dragon did not open its abyssal, fang-filled maw, yet those mocking, languid words exploded simultaneously within my mind and across the empty valley.",
+            "My blood froze instantly; my mind went completely blank.",
+            "The 'soul guide' who had accompanied me, directed me, mocked me, and even urged me to slay the beast just moments ago... was no wandering ghost at all. It was the abyssal dragon itself! It had been lurking in my consciousness the entire time, treating my desperate, agonizing trek like an amusing theatrical play performed by a mere ant!"
         ]
 
     elif node == 31:
@@ -605,7 +642,21 @@ def main(request):
                 active_encounter = Encounter.objects.create(player=player, enemy_type=enemy, enemy_hp=enemy.max_hp, status="ACTIVE")
 
     elif node == 32:
-        context['game_mode'] = 'decision'  
+        context['game_mode'] = 'interactive_npc'
+        context['npc_name'] = 'Dying Abyssal Dragon'
+        context['npc_image'] = 'dragon.png' 
+        context['npc_dialogue'] = (
+            "The colossal beast finally collapsed, its golden blood pooling over the shattered altar and scattering coins. The abyssal aura within its chest was fading, yet its pale-grey eyes still stared at me, devoid of fear, filled only with a chilling amusement.\n\n"
+            "\"Well done... my brave puppet,\" the dragon rasped. Its voice echoed in my mind one last time, weaker now, but still dripping with mockery. \"You have danced beautifully to the very end.\"\n\n"
+            "I stood before its massive corpse, feeling the suffocating dark power radiating from it. My blade trembled in my hands. \"Why? Why guide me all this way, just to let me kill you?\"\n\n"
+            "\"Kill me?\" The dragon let out a low, gurgling chuckle that made my skin crawl. \"Energy never dies, Dragonslayer. It merely changes vessels. This was never a hunt... it was a succession ritual.\"\n\n"
+            "It weakly shifted its massive head, presenting its glowing, corrupted eye to me. \"Now, look into my eye... claim the dark power you have rightfully earned. Or... are you too cowardly to embrace true godhood?\"\n\n"
+            "The dragon drew its final breath, leaving behind a suffocating silence and an eye that pulsed with a beguiling, crimson glow. It is time to make my final decision."
+        )
+        context['choices'] = [
+            {'text': 'Gouge out the dragon\'s eye and absorb the dark power.', 'action': 'ending_dragon'},
+            {'text': 'Raise your staff and burn the corpse and bones to ashes.', 'action': 'ending_hero'}
+        ]
 
     elif node == 33:
         context['game_mode'] = 'story'
