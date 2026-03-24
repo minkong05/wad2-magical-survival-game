@@ -82,6 +82,99 @@
     0 10px 28px color-mix(in srgb, var(--shadow) 45%, transparent);
 }
 
+.myaccount-upload-form {
+  width: min(100%, 520px);
+  margin: 0 auto 1.1rem;
+  padding: 0.8rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--gold) 24%, transparent);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--stone-light) 22%, transparent);
+}
+
+.myaccount-upload-label {
+  text-align: center;
+  color: var(--parchment-dark);
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.myaccount-upload-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.myaccount-upload-input {
+  width: min(100%, 360px);
+  color: var(--parchment);
+  font-family: 'Crimson Text', serif;
+  font-size: 0.9rem;
+}
+
+.myaccount-upload-input::file-selector-button {
+  margin-right: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--gold) 34%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--stone) 78%, black);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.33rem 0.62rem;
+  cursor: pointer;
+}
+
+.myaccount-upload-btn {
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--stone-light) 82%, black);
+  color: var(--gold-light);
+  font-family: 'Cinzel', serif;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.42rem 0.72rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.myaccount-upload-btn:hover {
+  background: color-mix(in srgb, var(--stone) 85%, black);
+}
+
+.myaccount-upload-error {
+  width: 100%;
+  margin: 0.1rem 0 0;
+  text-align: center;
+  color: #f0a7a7;
+  font-size: 0.9rem;
+}
+
+.myaccount-upload-success {
+  width: 100%;
+  margin: 0.1rem 0 0;
+  text-align: center;
+  color: #a9d7b2;
+  font-size: 0.9rem;
+}
+
+@media (max-width: 640px) {
+  .myaccount-upload-row {
+    flex-direction: column;
+  }
+}
+
 .myaccount-subtitle {
   margin: 0.2rem 0 0.6rem;
   font-family: 'Cinzel', serif;

@@ -70,6 +70,18 @@ def user_register(request):
 def myaccount(request):
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     player_profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
+    profile_form = UserProfileForm(instance=user_profile)
+    upload_status = request.GET.get("updated") == "1"
+
+    if request.method == "POST":
+        upload_status = False
+        profile_form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if not request.FILES.get("picture"):
+            profile_form.add_error("picture", "Please choose an image file to upload.")
+
+        if profile_form.is_valid():
+            profile_form.save()
+            return redirect(f"{reverse('core:myaccount')}?updated=1")
 
     learned_skills = list(
         player_profile.friends
@@ -98,6 +110,8 @@ def myaccount(request):
             "active_companion_name": active_companion.friend.name if active_companion else "None",
             "total_inventory_items": total_inventory_items,
             "unique_inventory_items": unique_inventory_items,
+            "profile_form": profile_form,
+            "upload_status": upload_status,
         },
     )
 

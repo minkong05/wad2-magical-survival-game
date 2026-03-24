@@ -22,6 +22,27 @@
       >
     </div>
 
+    <form method="post" action="{% url 'core:myaccount' %}" enctype="multipart/form-data" class="myaccount-upload-form">
+      {% csrf_token %}
+      <label for="id_picture" class="myaccount-upload-label">Update Profile Picture</label>
+      <div class="myaccount-upload-row">
+        <input
+          id="id_picture"
+          name="picture"
+          type="file"
+          accept="image/*"
+          class="myaccount-upload-input"
+        >
+        <button type="submit" class="myaccount-upload-btn">Upload</button>
+      </div>
+      {% if profile_form.picture.errors %}
+      <p class="myaccount-upload-error">{{ profile_form.picture.errors|striptags }}</p>
+      {% endif %}
+      {% if upload_status and not profile_form.picture.errors %}
+      <p class="myaccount-upload-success">Profile picture updated.</p>
+      {% endif %}
+    </form>
+
     <h3 class="myaccount-subtitle">Stats</h3>
     <ul class="myaccount-list">
       <li class="myaccount-list-item">Class: {{ player_profile.get_class_type_display }}</li>
