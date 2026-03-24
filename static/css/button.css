@@ -1,0 +1,44 @@
+.combat-btn {
+    display: block; 
+    width: 100%; 
+    padding: 8px 0; 
+    
+    background-color: #000e05; 
+    border: 2px solid #D4AF37; 
+    color: #D4AF37 !important; 
+    
+    border-radius: 4px; 
+    text-transform: uppercase; 
+    font-family: "Garamond", "Times New Roman", serif; 
+    font-size: 1.3rem; 
+    font-weight: bold; 
+    letter-spacing: 2px; 
+    text-align: center;
+    cursor: pointer;
+    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); 
+    transition: all 0.3s ease; 
+    text-decoration: none !important; 
+}
+
+
+.combat-btn:hover {
+    background-color: #D4AF37; 
+    color: #111111 !important; 
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); 
+}
+
+
+.combat-btn:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+
+.combat-btn:disabled {
+    border-color: #555555;
+    color: #555555 !important;
+    background-color: #1a1a1a;
+    cursor: not-allowed;
+    box-shadow: none;
+}
