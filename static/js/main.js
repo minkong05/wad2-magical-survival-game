@@ -2,8 +2,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
+    const friendBtn = document.getElementById("friendBtn");
+    const itemBtn = document.getElementById("itemBtn");
     const enemyHpBar = document.getElementById("enemyHpBar");
-    const friendBtn = document.getElementById("friendBtn");  
     const heroHpText = document.getElementById("heroHpText");
     const battleLog = document.getElementById("battleLog");
 
@@ -23,7 +24,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    function performAction(actionType) {
+    function setButtonsDisabled(disabled) {
+        if (fightBtn) fightBtn.disabled = disabled;
+        if (magicBtn) magicBtn.disabled = disabled;
+        if (friendBtn) friendBtn.disabled = disabled;
+        if (itemBtn) itemBtn.disabled = disabled;
+        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = disabled);
+    }
+
+    function performAction(actionType, itemId = null) {
         if (fightBtn && fightBtn.getAttribute("data-status") === "continue") {
             const form = document.getElementById("nextNodeForm");
             if (form) {
@@ -39,12 +48,10 @@ document.addEventListener("DOMContentLoaded", function() {
             return;
         }
 
-        if (fightBtn) fightBtn.disabled = true;
-        if (magicBtn) magicBtn.disabled = true;
-        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = true);
+        setButtonsDisabled(true);
 
         const body = { "action_type": actionType };
-        if (itemId) body["item_id"] = itemId;
+        if (itemId !== null && itemId !== undefined) body["item_id"] = itemId;
 
         fetch("/game/api/attack/", {
             method: "POST",
@@ -66,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     battleLog.appendChild(newLog);
                     battleLog.scrollTop = battleLog.scrollHeight;
                 }
-                enableButtons();
+                setButtonsDisabled(false);
                 return;
             }
 
@@ -103,19 +110,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     fightBtn.disabled = false; 
                 }
             } else {
-                enableButtons();
+                setButtonsDisabled(false);
             }
         })
         .catch(error => {
             console.error("Battle Error:", error);
-            enableButtons();
+            setButtonsDisabled(false);
         });
-    }
-
-    function enableButtons() {
-        if (fightBtn) fightBtn.disabled = false;
-        if (magicBtn) magicBtn.disabled = false;
-        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = false);
     }
 
     if (fightBtn) {
@@ -127,6 +128,18 @@ document.addEventListener("DOMContentLoaded", function() {
     if (magicBtn) {
         magicBtn.addEventListener("click", function() {
             performAction("magic");
+        });
+    }
+
+    if (friendBtn) {
+        friendBtn.addEventListener("click", function() {
+            performAction("friend");
+        });
+    }
+
+    if (itemBtn) {
+        itemBtn.addEventListener("click", function() {
+            performAction("item");
         });
     }
 
