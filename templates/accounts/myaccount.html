@@ -1,41 +1,16 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}My Account{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
-{% endblock %}
-
 {% block content %}
-<section class="myaccount-page">
-  <h1 class="myaccount-title">My Account</h1>
+<section>
+  <h1>This is our Myaccount pages</h1>
+  <p>
+    this page will show all the data of the user
+  </p>
 
-  <section class="myaccount-card">
-    <h2 class="myaccount-username">{{ user.username }}</h2>
 
-    <div class="myaccount-profile">
-      <img
-        class="myaccount-avatar"
-        src="{% static 'img/test.jpg' %}"
-        alt="Profile picture"
-        width="300"
-      >
-    </div>
-
-    <h3 class="myaccount-subtitle">Stats</h3>
-    <ul class="myaccount-list">
-      <li class="myaccount-list-item">Level: ( User level )</li>
-      <li class="myaccount-list-item">Recent Quests: ( The last two or three quests completed )</li>
-      <li class="myaccount-list-item">HP: ( Current user hp )</li>
-    </ul>
-
-    <h3 class="myaccount-subtitle">Skills Learned</h3>
-    <ul class="myaccount-list">
-      <li class="myaccount-list-item">( User skill )</li>
-      <li class="myaccount-list-item">( Another user skill )</li>
-      <li class="myaccount-list-item">( Third user skill )</li>
-    </ul>
-  </section>
 </section>
+
+<hr>
 
 {% endblock %}

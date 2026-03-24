@@ -2,72 +2,54 @@
 {% load static %}
 {% block title %}About Us{% endblock %}
 
-{% block extra_css %}
-  <link rel="stylesheet" href="{% static 'css/aboutus.css' %}">
-{% endblock %}
-
 
 {% block content %}
-<div class="aboutus-page">
-  <section class="aboutus-section aboutus-intro">
-    <div>
-      <h1 class="hello aboutus-title">About Magical Survival Game</h1>
-      <p class="aboutus-text">
-        Magical Survival Game is a browser-based fantasy RPG where players explore a magical world and battle increasingly dangerous enemies. 
-        Players choose a character class (Mage or Swordsman) 
-        and use a mix of combat skills, magic, and items to survive encounters across multiple levels, 
-        from early foes such as Skulls to the final boss, the Dragon. 
-        Along the way, players can explore to earn coins, 
-        meet friends/NPCs who provide helpful abilities (such as healing or learning spells), 
-        and visit a shop to buy weapons, armour, 
-        and potions. Each player's progress is saved to their account so they can return and continue their journey, 
-        and the game is won when the Dragon is defeated.
-      </p>
-    </div>
-  </section>
+<section>
+  <h1>About Magical Survival Game</h1>
+  <p>
+    Magical Survival Game is a browser-based fantasy RPG where players explore a magical world and battle increasingly dangerous enemies. 
+    Players choose a character class (Mage or Swordsman) 
+    and use a mix of combat skills, magic, and items to survive encounters across multiple levels, 
+    from early foes such as Skulls to the final boss, the Dragon. 
+    Along the way, players can explore to earn coins, 
+    meet friends/NPCs who provide helpful abilities (such as healing or learning spells), 
+    and visit a shop to buy weapons, armour, 
+    and potions. Each player’s progress is saved to their account so they can return and continue their journey, 
+    and the game is won when the Dragon is defeated.
+  </p>
+</section>
 
-  <div class="aboutus-section-inner">
-  <section class="aboutus-section aboutus-features">
-    <div>
-      <h2 class="aboutus-subtitle">What you can do</h2>
-      <ul class="aboutus-list aboutus-features-list">
-        <li class="aboutus-list-item">Create an account and log in to save your progress.</li>
-        <li class="aboutus-list-item">Fight enemies using standard attacks, magic skills, and items.</li>
-        <li class="aboutus-list-item">Earn coins through battles, missions, and exploration.</li>
-        <li class="aboutus-list-item">Visit the Shop to buy weapons, armour, and potions.</li>
-        <li class="aboutus-list-item">Recruit Friends (Phoenix, Shooter, Fairy, Hulk) for special abilities.</li>
-      </ul>
-    </div>
-  </section>
+<section>
+  <h2>What you can do</h2>
+  <ul>
+    <li>Create an account and log in to save your progress.</li>
+    <li>Fight enemies using standard attacks, magic skills, and items.</li>
+    <li>Earn coins through battles, missions, and exploration.</li>
+    <li>Visit the Shop to buy weapons, armour, and potions.</li>
+    <li>Recruit Friends (Phoenix, Shooter, Fairy, Hulk) for special abilities.</li>
+  </ul>
+</section>
 
-  <section class="aboutus-section aboutus-team">
-    <div>
-      <h2 class="aboutus-subtitle">Team 6B</h2>
-      <p class="aboutus-text">We are a WAD2 group team building this project as part of our coursework.</p>
-      <div class="aboutus-image-wrap">
-        <img class="aboutus-image" src="{% static 'img/test.jpg' %}" alt="testing image" width="300">
-      </div>
-      <ul class="aboutus-list aboutus-team-list">
-        <li class="aboutus-list-item"><strong>Kong Yu Min</strong></li>
-        <li class="aboutus-list-item"><strong>Aman Iqbal Noreen</strong></li>
-        <li class="aboutus-list-item"><strong>Isaac Wilson</strong></li>
-        <li class="aboutus-list-item"><strong>Toluwani David Ashiru</strong></li>
-        <li class="aboutus-list-item"><strong>Yuxuan Song</strong></li>
-      </ul>
-    </div>
-  </section>
+<section>
+  <h2>Team 6B</h2>
+  <p>We are a WAD2 group team building this project as part of our coursework.</p>
+  <img src="{% static 'img/test.jpg' %}" alt="testing image" width="300">
+  <ul>
+    <li><strong>Kong Yu Min</strong></li>
+    <li><strong>Aman Iqbal Noreen</strong></li>
+    <li><strong>Isaac Wilson</strong></li>
+    <li><strong>Toluwani David Ashiru</strong></li>
+    <li><strong>Yuxuan Song</strong></li>
+  </ul>
+</section>
 
-  <section class="aboutus-section aboutus-tech">
-    <div>
-      <h2 class="aboutus-subtitle">Tech</h2>
-      <ul class="aboutus-list aboutus-tech-list">
-        <li class="aboutus-list-item">Django + Python</li>
-        <li class="aboutus-list-item">HTML/CSS/JavaScript</li>
-      </ul>
-    </div>
-  </section>
-  </div>
-</div>
+<section>
+  <h2>Tech</h2>
+  <ul>
+    <li>Django + Python</li>
+    <li>HTML/CSS/JavaScript</li>
+  </ul>
+</section>
 
 
 {% endblock %}
