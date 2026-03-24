@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     document.addEventListener('keydown', function(event) {
+        const interactiveDataEl = document.getElementById('choicesData');
+        const decisionForm = document.getElementById('decisionForm');
+        const nextNodeForm = document.getElementById('nextNodeForm');
         
         if (storyDataEl && display) {
             if (event.key === 'Enter') {
@@ -43,15 +46,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        const nextNodeForm = document.getElementById('nextNodeForm');
-        if (!storyDataEl && display && nextNodeForm && event.key === 'Enter') {
-            event.preventDefault();
-            nextNodeForm.submit();
-            return;
-        }
-
         const decisionActionInput = document.getElementById('decisionAction');
-        const decisionForm = document.getElementById('decisionForm');
         if (decisionActionInput && decisionForm) {
             if (event.key === '1') {
                 event.preventDefault();
@@ -64,9 +59,23 @@ document.addEventListener("DOMContentLoaded", function() {
                 decisionForm.submit();
                 return;
             }
+            
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const hintText = document.getElementById('decision-hint-text');
+                if(hintText) {
+                    hintText.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    hintText.style.color = "red";
+                    hintText.style.transform = "scale(1.1)";
+                    setTimeout(() => {
+                        hintText.style.color = "#8B0000";
+                        hintText.style.transform = "scale(1)";
+                    }, 200);
+                }
+                return;
+            }
         }
 
-        const interactiveDataEl = document.getElementById('choicesData');
         const interactiveActionInput = document.getElementById('interactiveAction');
         const interactiveForm = document.getElementById('interactiveForm');
         
@@ -84,6 +93,25 @@ document.addEventListener("DOMContentLoaded", function() {
                 interactiveForm.submit();
                 return;
             }
+
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                const choicesContainer = document.getElementById('interactive-choices-container');
+                if(choicesContainer) {
+                    choicesContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+                    choicesContainer.style.transform = "translateX(5px)";
+                    setTimeout(() => choicesContainer.style.transform = "translateX(-5px)", 50);
+                    setTimeout(() => choicesContainer.style.transform = "translateX(5px)", 100);
+                    setTimeout(() => choicesContainer.style.transform = "translateX(0)", 150);
+                }
+                return;
+            }
+        }
+
+        if (!storyDataEl && !interactiveDataEl && !decisionForm && display && nextNodeForm && event.key === 'Enter') {
+            event.preventDefault();
+            nextNodeForm.submit();
+            return;
         }
     });
 
