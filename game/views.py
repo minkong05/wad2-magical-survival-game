@@ -741,6 +741,9 @@ def main(request):
             messages.error(request, "A disturbance in the magical weave occurred. The world has reset.")
             return redirect('/game/restart/')
     context['inventory_items'] = player.inventory.filter(quantity__gt=0)
+
+    merchant_nodes = [9, 10, 18, 28]
+    context['merchant_present'] = (node in merchant_nodes)
     
     return render(request, 'core/main.html', context)
 
@@ -748,7 +751,18 @@ def main(request):
 @login_required
 def shop(request):
 
+    player = request.user.playerprofile
+    if player.current_node not in [9, 10, 18, 28]:
+        from django.contrib import messages
+        messages.error(request, "The merchant is nowhere to be found...")
+        return redirect('game:main')
+
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
+
+    merchant_nodes = [9, 10, 18, 28]
+    if profile.current_node not in merchant_nodes:
+        messages.error(request, "The merchant is not nearby. You must survive on your own for now.")
+        return redirect('game:main')
 
     items = Item.objects.all().order_by("price", "name")
     inventory_items = (
