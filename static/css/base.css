@@ -18,10 +18,12 @@
 
 header {
   background-color: black;
+  position: -webkit-sticky;
   position: sticky;
   top: 0;
-  z-index: 1000;
+  z-index: 2000;
   font-weight: 600;
+  width: 100%;
 }
 
 .nav-site{
@@ -29,6 +31,7 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
+  background: var(--gold);
 }
 
 .nav-left,
@@ -51,11 +54,11 @@ main {
 
 
 nav {
-  padding: 12px;
-  background: var(--gold);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+  padding: 0;
+  background: transparent;
+  position: static;
+  top: auto;
+  z-index: auto;
 }
 
 nav a {
@@ -72,4 +75,18 @@ footer {
   text-align: center;
   margin: 20px 0 30px;
   color: var(--parchment-dark);
+}
+
+/* Safari fallback: sticky on flex layouts can be unreliable */
+@supports (-webkit-touch-callout: none) {
+  header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+
+  body {
+    padding-top: calc(56px + env(safe-area-inset-top));
+  }
 }

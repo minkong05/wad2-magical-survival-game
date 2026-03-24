@@ -20,14 +20,6 @@
   animation: fadeSlideDown 1s ease both;
 }
 
-.aboutus-section::before,
-.aboutus-section::after {
-  content: '✦';
-  position: absolute;
-  font-size: 1rem;
-  color: var(--gold-dim);
-  line-height: 1;
-}
 
 .aboutus-section::before {
   top: 10px;
