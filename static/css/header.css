@@ -1,0 +1,43 @@
+header {
+  background-color: black !important;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 2000 !important;
+  font-weight: 600 !important;
+  width: 100%;
+}
+
+header .nav-site {
+  display: flex;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 16px !important;
+  background: #c9a84c !important;
+}
+
+header .nav-left,
+header .nav-right {
+  display: flex;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+header nav {
+  padding: 0;
+  background: transparent;
+  position: static;
+  top: auto;
+  z-index: auto;
+}
+
+header .nav-site a,
+header .nav-site a:visited {
+  text-decoration: none;
+  color: #1a1208 !important;
+  font-weight: 600 !important;
+}
+
+header .nav-site a:hover {
+  text-decoration: underline !important;
+}

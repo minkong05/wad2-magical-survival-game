@@ -220,7 +220,11 @@ body {
 }
 
 .hero-img, .enemy-img {
-    mix-blend-mode: multiply; 
+    mix-blend-mode: normal;
+    display: block;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 250px;
     max-height: 250px; 
     object-fit: contain; 
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); 

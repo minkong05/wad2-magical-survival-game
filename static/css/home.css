@@ -10,7 +10,7 @@
   font-style: italic;
   color: var(--parchment-dark);
   text-align: center;
-  max-width: 620px;
+  max-width: 980px;
   margin: 0 auto 2.5rem;
   line-height: 1.8;
   animation: fadeSlideDown 1s ease 0.2s both;
