@@ -137,7 +137,7 @@
                 <p id="story-text-display" class="mb-5 text-center">
                     The dragon collapsed suddenly, and dark golden blood flowed on the gold coins.<br><br>I stand in front of its huge corpse, feeling the dark power that is enough to swallow people's hearts.<br><br>Now, it's time to decide...
                 </p>
-                <div class="mt-5 fs-4" style="line-height: 2.5; text-align: left; display: inline-block;">
+                <div id="decision-hint-text" class="mt-5 fs-4" style="line-height: 2.5; text-align: left; display: inline-block; transition: all 0.2s ease;">
                     <span style="color: #8B0000; font-weight: bold; animation: blink 3s infinite;">
                         [ Press <strong>1</strong> ] Dig out the dragon's eyes and absorb the dark power
                     </span><br>
@@ -203,7 +203,7 @@
                     <p id="story-text-display" class="mt-2 mb-4">
                         {{ npc_dialogue|linebreaksbr }}
                     </p>
-                    <div class="mt-4 fs-5" style="line-height: 2.2; text-align: left; display: inline-block;">
+                    <div id="interactive-choices-container" class="mt-4 fs-5" style="line-height: 2.2; text-align: left; display: inline-block; transition: transform 0.1s;">
                         {% for choice in choices %}
                             <span style="color: #8B0000; font-weight: bold; cursor: pointer;">
                                 [ Press <strong>{{ forloop.counter }}</strong> ] <span style="color: #333;">{{ choice.text }}</span>
@@ -300,7 +300,7 @@
         <input type="hidden" name="action" value="next_node">
     </form>
 
-    <script src="{% static 'js/main.js' %}?v=10"></script>
+    <script src="{% static 'js/main.js' %}?v=12"></script>
 </div>
 {% endblock %}
 
