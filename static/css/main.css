@@ -48,22 +48,180 @@
     padding-bottom: 8px;
 }
 
+
+body {
+    background-color: #1a1a1a; 
+
+    background-image: 
+        linear-gradient(rgba(10, 10, 15, 0.6), rgba(15, 10, 10, 0.8)), 
+        url('../images/bg.jpg');
+
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    background-attachment: fixed;
+    
+    color: #e0e0e0; 
+}
+
+.enemy-section {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
 .log-warning {
     color: #7f1d1d; 
     font-style: italic; 
 }
 
 
-.level-title {
+
+.epic-gold-title {
     font-family: 'Cinzel', serif; 
-    font-size: 2.2rem;
+    font-size: 3.5rem; 
     font-weight: 700;
-    color: #A67E36; 
+    margin: 0;
+    letter-spacing: 3px; 
     text-transform: uppercase; 
-    letter-spacing: 2px; 
-    text-shadow: 1px 1px 2px rgba(214, 200, 200, 0.5); 
+
+
+    background: linear-gradient(
+        to bottom, 
+        #D4AF37 0%,   
+        #FFDF73 25%,  
+        #9C6F2F 50%,  
+        #E8D09C 75%,  
+        #5C3A11 100%  
+    );
+    
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+
+    -webkit-text-stroke: 1.5px #3A2308; 
+    filter: drop-shadow(3px 5px 4px rgba(0, 0, 0, 0.6)); 
+}
+
+
+.elegant-story-box {
+    position: relative;
+    background-color: rgba(253, 245, 230, 0.75); 
+    backdrop-filter: blur(6px); 
+    -webkit-backdrop-filter: blur(6px);
+    
+    padding: 35px 25px;
+    border: 2px solid transparent;
+    border-image: linear-gradient(135deg, #c5a059 0%, #f9d976 25%, #a67c33 50%, #f9d976 75%, #c5a059 100%) 1;
+    box-shadow: inset 0 0 20px rgba(197, 160, 89, 0.1), 0 8px 25px rgba(0, 0, 0, 0.5);
+    margin-bottom: 20px;
+}
+
+
+.elegant-story-box::after {
+    content: '';
+    position: absolute;
+    top: 8px; right: 8px; bottom: 8px; left: 8px;
+    border: 1px solid rgba(197, 160, 89, 0.6);
+    pointer-events: none;
+}
+
+.elegant-story-box::before {
+    content: '⚜';
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #c5a059;
+    font-size: 24px;
+    background: transparent; 
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5); 
+    font-family: 'Cinzel', serif;
+}
+
+
+.fantasy-btn {
+    display: inline-block;
+    background: linear-gradient(to bottom, #4a3018, #261407);
+    border: 2px solid #a67c33; 
+    color: #f9d976;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 8px 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: inset 0 0 8px rgba(0,0,0,0.8), 0 4px 8px rgba(0,0,0,0.6);
+    transition: all 0.2s ease-in-out;
+}
+
+.fantasy-btn:hover {
+    background: linear-gradient(to bottom, #5c3d20, #361f0d);
+    color: #fff2c8;
+    border-color: #f9d976;
+    transform: translateY(-2px); 
+    box-shadow: inset 0 0 10px rgba(249,217,118,0.2), 0 6px 12px rgba(0,0,0,0.8);
+}
+
+
+
+#story-text-display {
+    font-family: 'EB Garamond', serif; 
+    font-size: 1.35rem; 
+    line-height: 1.8; 
+    color: #2c1e0f; 
+    letter-spacing: 0.5px;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3); 
+}
+
+
+#story-text-display i {
+    font-style: italic;
+    color: #5a2e15; 
 }
 
 #enemyHpBar {
     transition: width 0.5s ease-in-out; 
+}
+
+
+
+.story-scroll-area {
+    height: 350px; 
+    overflow-y: scroll !important; 
+    padding-right: 15px; 
+    text-align: left;
+    
+    scrollbar-width: auto !important; 
+    scrollbar-color: #99978f transparent;
+}
+
+.story-scroll-area::-webkit-scrollbar {
+    width: 12px !important; 
+    display: block !important; 
+}
+
+.story-scroll-area::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1) !important;
+    border-radius: 6px;
+    border: 1px inset rgba(0, 0, 0, 0.2);
+}
+
+.story-scroll-area::-webkit-scrollbar-thumb {
+    background-color: #a5a299 !important; 
+    border-radius: 6px;
+    border: 2px solid rgba(253, 245, 230, 0.5) !important; 
+}
+
+.story-scroll-area::-webkit-scrollbar-thumb:hover {
+    background-color: #ecdca8 !important; 
+}
+
+.hero-img, .enemy-img {
+    mix-blend-mode: multiply; 
+    max-height: 250px; 
+    object-fit: contain; 
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); 
 }

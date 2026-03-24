@@ -22,14 +22,20 @@ document.addEventListener("DOMContentLoaded", function() {
         return cookieValue;
     }
 
-    function performAction(actionType, itemId = null) {
-        if (fightBtn && fightBtn.innerText.includes("Continue")) {
-            window.location.reload();
+
+    function performAction(actionType) {
+        if (fightBtn && fightBtn.getAttribute("data-status") === "continue") {
+            const form = document.getElementById("nextNodeForm");
+            if (form) {
+                form.submit();
+            } else {
+                window.location.reload(); 
+            }
             return;
         }
 
-        if (fightBtn && fightBtn.innerText.includes("Restart")) {
-            window.location.href = "/game/restart/";
+        if (fightBtn && fightBtn.getAttribute("data-status") === "restart") {
+            window.location.href = "/game/restart/"; 
             return;
         }
 
@@ -85,14 +91,16 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.game_status === "won") {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
-                    fightBtn.classList.replace("btn-danger", "btn-success");
-                    fightBtn.disabled = false;
+                    fightBtn.setAttribute("data-status", "continue");
+                    fightBtn.classList.replace("btn-danger", "btn-success"); 
+                    fightBtn.disabled = false; 
                 }
             } else if (data.game_status === "lost") {
                 if (fightBtn) {
                     fightBtn.innerText = "Restart";
-                    fightBtn.classList.replace("btn-danger", "btn-dark");
-                    fightBtn.disabled = false;
+                    fightBtn.setAttribute("data-status", "restart");
+                    fightBtn.classList.replace("btn-danger", "btn-dark"); 
+                    fightBtn.disabled = false; 
                 }
             } else {
                 enableButtons();
