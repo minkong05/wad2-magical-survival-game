@@ -738,6 +738,7 @@ def main(request):
         else:
             messages.error(request, "A disturbance in the magical weave occurred. The world has reset.")
             return redirect('/game/restart/')
+    context['inventory_items'] = player.inventory.filter(quantity__gt=0)
     
     return render(request, 'core/main.html', context)
 
@@ -822,16 +823,29 @@ def perform_attack(request):
         if enemy_type.name.upper() == "WITCH" and action_type == "magic":
             return JsonResponse({"error": "The dark wizard's shadow power suppresses your magic and makes it impossible to cast it!"}, status=400)
 
+        passive_damage_boost = 0
+        passive_defence_boost = 0
+        
+        for inv in player.inventory.filter(quantity__gt=0):
+            if inv.item.type == "WEAPON":
+                passive_damage_boost += (inv.item.effect_value * inv.quantity)
+            elif inv.item.type == "ARMOUR":
+                passive_defence_boost += (inv.item.effect_value * inv.quantity)
+
         player_damage = 0
-        incoming_damage_reduction = 0
+        incoming_damage_reduction = passive_defence_boost
         enemy_damage = max(1, random.randint(max(1, enemy_type.damage - 2), enemy_type.damage + 2))
+
+        used_item_id = None
+        remaining_qty = None
+        used_item_name = None
 
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
             
         elif action_type == "fight":
-            player_damage = random.randint(10, 20)
+            player_damage = random.randint(10, 20) + passive_damage_boost
             
             if enemy_type.name.upper() == "DRAGON":
                 player_damage = player_damage // 2  
@@ -878,11 +892,15 @@ def perform_attack(request):
                 return JsonResponse({"error": "You do not have any usable consumable item."}, status=400)
 
             item = inventory_item.item
+            used_item_id = item.id
+            used_item_name = item.name
             inventory_item.quantity -= 1
             if inventory_item.quantity > 0:
                 inventory_item.save(update_fields=["quantity"])
+                remaining_qty = inventory_item.quantity
             else:
                 inventory_item.delete()
+                remaining_qty = 0
 
             if item.effect == "HEAL":
                 heal_amount = item.effect_value
@@ -891,12 +909,6 @@ def perform_attack(request):
             elif item.effect == "DAMAGE_BOOST":
                 player_damage = random.randint(8, 15) + item.effect_value
                 log_message = f"🧪 You used {item.name} and struck for {player_damage} boosted damage!"
-            elif item.effect == "DEFENCE_BOOST":
-                incoming_damage_reduction = item.effect_value
-                log_message = (
-                    f"🧪 You used {item.name}. Incoming damage will be reduced by "
-                    f"{incoming_damage_reduction} this turn."
-                )
             else:
                 log_message = f"🧪 You used {item.name}, but nothing happened."
 
@@ -922,7 +934,6 @@ def perform_attack(request):
                 active_encounter.enemy_hp = 0
                 active_encounter.status = "WON" 
             
-                
                 player.monsters_defeated += 1
                 player.coins += enemy_type.reward_coins
             
@@ -954,10 +965,13 @@ def perform_attack(request):
             "player_hp": player.hp,
             "enemy_hp_percent": enemy_hp_percent,
             "log_message": log_message,
-            "game_status": game_status
+            "game_status": game_status,
+            "used_item_id": used_item_id,
+            "remaining_qty": remaining_qty,
+            "used_item_name": used_item_name
         })
     
-    return JsonResponse({"error": "Invalid request"}, status=400)      
+    return JsonResponse({"error": "Invalid request"}, status=400) 
 
 def restart_game(request):
     player = request.user.playerprofile
