@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", function() {
-
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
     const friendBtn = document.getElementById("friendBtn");
@@ -7,6 +6,86 @@ document.addEventListener("DOMContentLoaded", function() {
     const enemyHpBar = document.getElementById("enemyHpBar");
     const heroHpText = document.getElementById("heroHpText");
     const battleLog = document.getElementById("battleLog");
+
+    if (enemyHpBar && enemyHpBar.getAttribute('data-hp')) {
+        enemyHpBar.style.width = enemyHpBar.getAttribute('data-hp') + '%';
+    }
+
+    const storyDataEl = document.getElementById('storyData');
+    const display = document.getElementById('story-text-display');
+    let texts = [];
+    let currentIndex = 0;
+
+    function showNextLine() {
+        if (currentIndex < texts.length) {
+            display.innerHTML = texts[currentIndex];
+            currentIndex++;
+            const scrollContainer = document.getElementById('story-scroll-container');
+            if (scrollContainer) scrollContainer.scrollTop = 0;
+        } else {
+            const nextNodeForm = document.getElementById('nextNodeForm');
+            if(nextNodeForm) nextNodeForm.submit();
+        }
+    }
+
+    if (storyDataEl && display) {
+        texts = JSON.parse(storyDataEl.textContent);
+        showNextLine(); 
+    }
+
+    document.addEventListener('keydown', function(event) {
+        
+        if (storyDataEl && display) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                showNextLine();
+                return;
+            }
+        }
+
+        const nextNodeForm = document.getElementById('nextNodeForm');
+        if (!storyDataEl && display && nextNodeForm && event.key === 'Enter') {
+            event.preventDefault();
+            nextNodeForm.submit();
+            return;
+        }
+
+        const decisionActionInput = document.getElementById('decisionAction');
+        const decisionForm = document.getElementById('decisionForm');
+        if (decisionActionInput && decisionForm) {
+            if (event.key === '1') {
+                event.preventDefault();
+                decisionActionInput.value = 'ending_dragon';
+                decisionForm.submit();
+                return;
+            } else if (event.key === '2') {
+                event.preventDefault();
+                decisionActionInput.value = 'ending_hero';
+                decisionForm.submit();
+                return;
+            }
+        }
+
+        const interactiveDataEl = document.getElementById('choicesData');
+        const interactiveActionInput = document.getElementById('interactiveAction');
+        const interactiveForm = document.getElementById('interactiveForm');
+        
+        if (interactiveDataEl && interactiveActionInput && interactiveForm) {
+            const rawChoices = JSON.parse(interactiveDataEl.textContent);
+            const choices = rawChoices.map((choice, index) => ({
+                key: (index + 1).toString(),
+                action: choice.action
+            }));
+
+            const selectedChoice = choices.find(c => c.key === event.key);
+            if (selectedChoice) {
+                event.preventDefault();
+                interactiveActionInput.value = selectedChoice.action;
+                interactiveForm.submit();
+                return;
+            }
+        }
+    });
 
     function getCookie(name) {
         let cookieValue = null;
@@ -22,7 +101,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         return cookieValue;
     }
-
 
     function setButtonsDisabled(disabled) {
         if (fightBtn) fightBtn.disabled = disabled;
@@ -67,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (data.error) {
                 if (battleLog) {
                     const newLog = document.createElement("p");
-                    newLog.innerHTML = `<span class="log-warning"> Note: ${data.error}</span>`;
+                    newLog.innerHTML = `<span class="log-warning" style="color:#8B0000; font-weight:bold;"> Note: ${data.error}</span>`;
                     newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
                     newLog.style.paddingBottom = "8px";
                     battleLog.appendChild(newLog);
@@ -114,14 +192,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
                     fightBtn.setAttribute("data-status", "continue");
-                    fightBtn.classList.replace("btn-danger", "btn-success"); 
+                    fightBtn.style.backgroundColor = "#28a745"; 
+                    fightBtn.style.borderColor = "#1e7e34";
+                    fightBtn.style.color = "#ffffff";
                     fightBtn.disabled = false; 
                 }
             } else if (data.game_status === "lost") {
                 if (fightBtn) {
                     fightBtn.innerText = "Restart";
                     fightBtn.setAttribute("data-status", "restart");
-                    fightBtn.classList.replace("btn-danger", "btn-dark"); 
+                    fightBtn.style.backgroundColor = "#8b0000"; 
                     fightBtn.disabled = false; 
                 }
             } else {
@@ -134,36 +214,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    if (fightBtn) {
-        fightBtn.addEventListener("click", function() {
-            performAction("fight");
-        });
-    }
-
-    if (magicBtn) {
-        magicBtn.addEventListener("click", function() {
-            performAction("magic");
-        });
-    }
-
-    if (friendBtn) {
-        friendBtn.addEventListener("click", function() {
-            performAction("friend");
-        });
-    }
+    if (fightBtn) fightBtn.addEventListener("click", () => performAction("fight"));
+    if (magicBtn) magicBtn.addEventListener("click", () => performAction("magic"));
+    if (friendBtn) friendBtn.addEventListener("click", () => performAction("friend"));
 
     const itemMenu = document.getElementById("itemMenuContainer");
-
     if (itemBtn) {
         itemBtn.addEventListener("click", function() {
             if (itemMenu) {
-                if (itemMenu.style.display === "none" || itemMenu.style.display === "") {
-                    itemMenu.style.display = "block"; 
-                } else {
-                    itemMenu.style.display = "none";  
-                }
-            } else {
-                console.error("Can't find container.");
+                itemMenu.style.display = (itemMenu.style.display === "none" || itemMenu.style.display === "") ? "block" : "none";
             }
         });
     }
@@ -172,10 +231,7 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", function() {
             const itemId = this.getAttribute("data-item-id");
             performAction("item", itemId);
-            
-            if (itemMenu) {
-                itemMenu.style.display = "none";
-            }
+            if (itemMenu) itemMenu.style.display = "none";
         });
     });
 });

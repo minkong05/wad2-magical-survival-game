@@ -229,3 +229,6 @@ body {
     object-fit: contain; 
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.4)); 
 }
+
+
+@keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.3;} 100% {opacity: 1;} }
