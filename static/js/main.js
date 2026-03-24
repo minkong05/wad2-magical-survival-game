@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-    
-
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
+    const friendBtn = document.getElementById("friendBtn");
+    const itemBtn = document.getElementById("itemBtn");
     const enemyHpBar = document.getElementById("enemyHpBar");
     const heroHpText = document.getElementById("heroHpText");
     const battleLog = document.getElementById("battleLog");
@@ -24,31 +24,43 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    function performAction(actionType) {
-        if (fightBtn && fightBtn.innerText.includes("Continue")) {
-            window.location.reload();
+    function setButtonsDisabled(disabled) {
+        if (fightBtn) fightBtn.disabled = disabled;
+        if (magicBtn) magicBtn.disabled = disabled;
+        if (friendBtn) friendBtn.disabled = disabled;
+        if (itemBtn) itemBtn.disabled = disabled;
+        document.querySelectorAll(".itemBtn").forEach(btn => btn.disabled = disabled);
+    }
+
+    function performAction(actionType, itemId = null) {
+        if (fightBtn && fightBtn.getAttribute("data-status") === "continue") {
+            const form = document.getElementById("nextNodeForm");
+            if (form) {
+                form.submit();
+            } else {
+                window.location.reload(); 
+            }
             return;
         }
 
-        if (fightBtn && fightBtn.innerText.includes("Restart")) {
+        if (fightBtn && fightBtn.getAttribute("data-status") === "restart") {
             window.location.href = "/game/restart/"; 
             return;
         }
 
-        if (fightBtn) fightBtn.disabled = true;
-        if (magicBtn) magicBtn.disabled = true;
+        setButtonsDisabled(true);
 
+        const body = { "action_type": actionType };
+        if (itemId !== null && itemId !== undefined) body["item_id"] = itemId;
 
-        fetch("/game/api/attack/", { 
+        fetch("/game/api/attack/", {
             method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken"),
                 "Accept": "application/json",
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({
-                "action_type": actionType  
-            })
+            body: JSON.stringify(body)
         })
         .then(response => response.json())
         .then(data => {
@@ -58,19 +70,17 @@ document.addEventListener("DOMContentLoaded", function() {
                     newLog.innerHTML = `<span class="log-warning"> Note: ${data.error}</span>`;
                     newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
                     newLog.style.paddingBottom = "8px";
-                    
                     battleLog.appendChild(newLog);
-                    battleLog.scrollTop = battleLog.scrollHeight; 
+                    battleLog.scrollTop = battleLog.scrollHeight;
                 }
-                enableButtons();
+                setButtonsDisabled(false);
                 return;
             }
-
 
             if (enemyHpBar) {
                 enemyHpBar.style.width = data.enemy_hp_percent + "%";
             }
-            
+
             if (heroHpText) {
                 heroHpText.innerText = "HP: " + data.player_hp;
             }
@@ -78,54 +88,65 @@ document.addEventListener("DOMContentLoaded", function() {
             if (battleLog) {
                 const newLog = document.createElement("p");
                 newLog.innerHTML = data.log_message;
-                newLog.style.color = "#2B1A0D"; 
-                newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)"; 
+                newLog.style.color = "#2B1A0D";
+                newLog.style.borderBottom = "1px solid rgba(122, 92, 35, 0.2)";
                 newLog.style.paddingBottom = "8px";
-                
                 battleLog.appendChild(newLog);
-                
                 battleLog.scrollTop = battleLog.scrollHeight;
             }
-
 
             if (data.game_status === "won") {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
+                    fightBtn.setAttribute("data-status", "continue");
                     fightBtn.classList.replace("btn-danger", "btn-success"); 
                     fightBtn.disabled = false; 
                 }
-            }
-             else if (data.game_status === "lost") {
+            } else if (data.game_status === "lost") {
                 if (fightBtn) {
                     fightBtn.innerText = "Restart";
+                    fightBtn.setAttribute("data-status", "restart");
                     fightBtn.classList.replace("btn-danger", "btn-dark"); 
                     fightBtn.disabled = false; 
                 }
             } else {
-                enableButtons();
+                setButtonsDisabled(false);
             }
         })
         .catch(error => {
             console.error("Battle Error:", error);
-            enableButtons();
+            setButtonsDisabled(false);
         });
     }
 
-    function enableButtons() {
-        if (fightBtn) fightBtn.disabled = false;
-        if (magicBtn) magicBtn.disabled = false;
-    }
-
-
     if (fightBtn) {
         fightBtn.addEventListener("click", function() {
-            performAction("fight"); 
+            performAction("fight");
         });
     }
 
     if (magicBtn) {
         magicBtn.addEventListener("click", function() {
-            performAction("magic"); 
+            performAction("magic");
         });
     }
+
+    if (friendBtn) {
+        friendBtn.addEventListener("click", function() {
+            performAction("friend");
+        });
+    }
+
+    if (itemBtn) {
+        itemBtn.addEventListener("click", function() {
+            performAction("item");
+        });
+    }
+
+    document.querySelectorAll(".itemBtn").forEach(function(btn) {
+        btn.addEventListener("click", function() {
+            const itemId = this.getAttribute("data-item-id");
+            performAction("item", itemId);
+        });
+    });
 });
