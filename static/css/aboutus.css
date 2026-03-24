@@ -1,0 +1,161 @@
+/* About page specific styles.*/
+
+.aboutus-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.aboutus-section {
+  position: relative;
+  padding: 0 0 3.6rem;
+  animation: fadeSlideDown 1s ease both;
+}
+
+.aboutus-section-inner {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 2rem 2.5rem;
+  border-radius: 4px;
+  animation: fadeSlideDown 1s ease both;
+}
+
+.aboutus-section::before,
+.aboutus-section::after {
+  content: '✦';
+  position: absolute;
+  font-size: 1rem;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+
+.aboutus-section::before {
+  top: 10px;
+  left: 14px;
+}
+
+.aboutus-section::after {
+  bottom: 10px;
+  right: 14px;
+}
+
+.aboutus-text {
+  font-size: clamp(1rem, 2vw, 1.15rem);
+  color: var(--parchment-dark);
+  line-height: 1.8;
+  margin: 0;
+}
+
+.aboutus-intro .aboutus-text {
+  font-style: italic;
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.aboutus-team .aboutus-text {
+  text-align: center;
+  margin-bottom: 1.2rem;
+}
+
+.aboutus-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.aboutus-list-item {
+  position: relative;
+  padding-left: 2rem;
+  font-size: 1.05rem;
+  color: var(--parchment);
+  line-height: 1.6;
+}
+
+.aboutus-list-item::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  top: 0.2rem;
+  color: var(--gold);
+  font-size: 0.95rem;
+}
+
+.aboutus-team-list {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.aboutus-team-list .aboutus-list-item {
+  text-align: center;
+  padding-left: 0;
+}
+
+.aboutus-team-list .aboutus-list-item::before {
+  position: static;
+  margin-right: 0.55rem;
+}
+
+.aboutus-image-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 0.4rem 0 1.2rem;
+}
+
+.aboutus-image {
+  max-width: min(100%, 420px);
+  height: auto;
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  border-radius: 4px;
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--gold) 18%, transparent),
+    0 10px 28px color-mix(in srgb, var(--shadow) 45%, transparent);
+}
+
+.aboutus-intro {
+  animation-delay: 0.1s;
+}
+
+.aboutus-features {
+  animation-delay: 0.2s;
+}
+
+.aboutus-team {
+  animation-delay: 0.3s;
+}
+
+.aboutus-tech {
+  animation-delay: 0.4s;
+}
+
+@media (max-width: 800px) {
+  .aboutus-section-inner {
+    padding: 1.5rem 1.35rem;
+  }
+
+  .aboutus-list-item {
+    padding-left: 1.6rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .aboutus-page {
+    gap: 1rem;
+  }
+
+  .aboutus-title::after {
+    letter-spacing: 0.22em;
+    font-size: 1.05rem;
+  }
+
+  .aboutus-subtitle {
+    letter-spacing: 0.08em;
+  }
+
+  .aboutus-image {
+    width: 100%;
+  }
+}

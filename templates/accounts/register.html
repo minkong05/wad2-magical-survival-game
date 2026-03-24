@@ -1,26 +1,38 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %} Register {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
 {% block content %}
-    <h1>Register</h1>
+<section class="auth-page">
+    <div class="auth-card">
+        <h1 class="auth-title">Register</h1>
 
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
+        {% if error %}
+            <p class="auth-error">{{ error }}</p>
+        {% endif %}
 
-    <form method="post" action="/Register" class="form">
-        {% csrf_token %}
+        <form method="post" action="{% url 'accounts:register' %}" class="auth-form">
+            {% csrf_token %}
 
-        <label for="username">Username</label>
-        <input id="username" name="username" type="text" required>
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" required>
 
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" required>
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email">
 
-        <button type="submit">Register</button>
-    </form>
+            <label for="password">Password</label>
+            <input id="password" name="password" type="password" required>
 
-    <p class="hint">
-        Already have an account? <a href="/Login">Just log in! </a>
-    </p>
+            <button type="submit" class="btn-game auth-submit">Register</button>
+        </form>
+
+        <p class="auth-hint">
+            Already have an account? <a href="{% url 'accounts:login' %}">Just log in!</a>
+        </p>
+    </div>
+</section>
 {% endblock %}

@@ -2,32 +2,40 @@
 {% load static %}
 {% block title %}My Account{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/myaccount.css' %}">
+{% endblock %}
+
 {% block content %}
-<section>
-  
-<h1><b>My Account </b></h1>
- <h2><u> (User username) </u></h2>
- 
-  <img src="{% static 'img/test.jpg' %}" alt="testing profile picture" width="300">
+<section class="myaccount-page">
+  <h1 class="myaccount-title">My Account</h1>
 
-  <ul> 
+  <section class="myaccount-card">
+    <h2 class="myaccount-username">{{ user.username }}</h2>
 
-    <li> Level: ( User level ) </li>
-    <li> Recent Quests: ( The last two or three quests completed ) </li> 
-    <li> HP: ( Current uer hp ) </li> 
+    <div class="myaccount-profile">
+      <img
+        class="myaccount-avatar"
+        src="{% static 'img/test.jpg' %}"
+        alt="Profile picture"
+        width="300"
+      >
+    </div>
 
-  </ul> <br> 
+    <h3 class="myaccount-subtitle">Stats</h3>
+    <ul class="myaccount-list">
+      <li class="myaccount-list-item">Level: ( User level )</li>
+      <li class="myaccount-list-item">Recent Quests: ( The last two or three quests completed )</li>
+      <li class="myaccount-list-item">HP: ( Current user hp )</li>
+    </ul>
 
-  <h2><b> Skills Learned: </b></h2> 
-   <ul> 
-   <li> ( User skill ) </li> 
-   <li> ( Another user skill ) </li> 
-   <li> ( Third user skill ) </li>
-   </ul>
-
-
+    <h3 class="myaccount-subtitle">Skills Learned</h3>
+    <ul class="myaccount-list">
+      <li class="myaccount-list-item">( User skill )</li>
+      <li class="myaccount-list-item">( Another user skill )</li>
+      <li class="myaccount-list-item">( Third user skill )</li>
+    </ul>
+  </section>
 </section>
-
-<hr>
 
 {% endblock %}

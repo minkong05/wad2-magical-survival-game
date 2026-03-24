@@ -1,30 +1,46 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Character Select{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/character_select.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>Choose Your Class</h1>
+<section class="class-select">
+  <h1 class="class-select__title">Choose Your Class</h1>
+  <p class="class-select__subtitle">Pick your path before entering the realm.</p>
 
-{% if error %}
-  <p style="color:red">{{ error }}</p>
-{% endif %}
+  {% if error %}
+    <p class="class-select__error">{{ error }}</p>
+  {% endif %}
 
-<form method="post">
-  {% csrf_token %}
+  <form method="post" class="class-select__form">
+    {% csrf_token %}
 
-  <label>
-    <input type="radio" name="class_type" value="MAGE"
-      {% if profile.class_type == "MAGE" %}checked{% endif %}>
-    Mage
-  </label>
-  <br>
+    <label class="class-select__option">
+      <input
+        type="radio"
+        name="class_type"
+        value="MAGE"
+        {% if current == "MAGE" %}checked{% endif %}
+      >
+      <span class="class-select__option-name">Mage</span>
+      <span class="class-select__option-desc">Master arcane spells and ranged damage.</span>
+    </label>
 
-  <label>
-    <input type="radio" name="class_type" value="SWORDSMAN"
-      {% if profile.class_type == "SWORDSMAN" %}checked{% endif %}>
-    Swordsman
-  </label>
-  <br><br>
+    <label class="class-select__option">
+      <input
+        type="radio"
+        name="class_type"
+        value="SWORDSMAN"
+        {% if current == "SWORDSMAN" %}checked{% endif %}
+      >
+      <span class="class-select__option-name">Swordsman</span>
+      <span class="class-select__option-desc">Stand firm in close combat with strong defense.</span>
+    </label>
 
-  <button type="submit">Confirm</button>
-</form>
+    <button type="submit" class="btn-game class-select__submit">Confirm</button>
+  </form>
+</section>
 {% endblock %}
