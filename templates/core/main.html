@@ -89,6 +89,32 @@
         @keyframes blink { 0% {opacity: 1;} 50% {opacity: 0.3;} 100% {opacity: 1;} }
     </style>
 
+    {% elif game_mode == 'ending_signpost' %}
+            <div class="story-content" style="background-color: rgba(253, 245, 230, 0.9); border: 2px solid #5c4033; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); margin: 20px auto; max-width: 800px;">
+                
+                <div style="color: #2b1d14; line-height: 1.6;">
+                    {% for text in story_texts %}
+                        <p style="margin-bottom: 15px;">{{ text|safe }}</p>
+                    {% endfor %}
+                </div>
+                
+                <form method="post" style="margin-top: 30px; text-align: center;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="leave_signpost">
+                    <input type="hidden" name="ending_type" value="{{ ending_type }}">
+                    
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                        <input type="text" name="signpost_message" maxlength="30" 
+                               placeholder="Leave your message (Maximum 30 words)" required 
+                               style="width: 100%; max-width: 500px; padding: 12px; font-size: 16px; background-color: #fff; border: 2px solid #5c4033; border-radius: 4px; color: #333; outline: none; box-sizing: border-box;">
+                        
+                        <button type="submit" style="padding: 12px 30px; font-size: 16px; background-color: #2b1d14; color: #d4af37; border: 2px solid #d4af37; border-radius: 4px; cursor: pointer; font-weight: bold; transition: all 0.3s;">
+                            Engrave Mark
+                        </button>
+                    </div>
+                </form>
+            </div>
+
     {% elif game_mode == 'riddle' %}
     <div class="row mt-4">
         <div class="col-md-3 left-panel text-center">

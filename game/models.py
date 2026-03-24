@@ -116,4 +116,12 @@ class Encounter(models.Model):
     def __str__(self):
         return f"{self.player.user.username} vs {self.enemy_type.name} ({self.status})"
 
+class Signpost(models.Model):
+    message = models.CharField(max_length=150)
+    created_at = models.DateTimeField(auto_now_add=True)
+    ending_type = models.CharField(max_length=50, blank=True, null=True)
+
+    def __str__(self):
+        return f"[{self.ending_type}] {self.message}"
+
 
