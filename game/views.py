@@ -5,10 +5,15 @@ from .models import InventoryItem, Item, PlayerProfile
 from django.http import JsonResponse
 import random
 import json  
-from .models import Encounter, EnemyType, Signpost,FriendType, PlayerFriend
+from .models import Encounter, EnemyType, Signpost, FriendType, PlayerFriend
 
 @login_required
 def main(request):
+    """
+    Main game loop and story routing view.
+    Handles player navigation, story text rendering, and NPC interactions.
+    """
+    # Ensure user has a player profile
     if not hasattr(request.user, 'playerprofile'):
         PlayerProfile.objects.create(user=request.user)
         return redirect('game:character_select')
@@ -17,52 +22,32 @@ def main(request):
     if not player.class_selected:
         return redirect('game:character_select')
     
+    # Action Handling (Form Submissions / UI Clicks)
     if request.method == "POST":
         action = request.POST.get("action")
         
         if action == "next_node":
-            if player.current_node in [121, 122]:
-                player.current_node = 13
-                player.save()
-                return redirect('game:main')
-            elif player.current_node in [201, 202,214,215]:
-                player.current_node = 23
-                player.save()
-                return redirect('game:main')
-            elif player.current_node == 203:
-                player.current_node = 21
-                player.save()
-                return redirect('game:main')
-            elif player.current_node in [231, 232]:
-                player.current_node = 24
-                player.save()
-                return redirect('game:main')
-            elif player.current_node in [241, 242]:
-                player.current_node = 25
-                player.save()
-                return redirect('game:main')
-            elif player.current_node == 25:
-                player.current_node = 251
-                player.save()
-                return redirect('game:main')
-            elif player.current_node == 251:
-                player.current_node = 26
-                player.save()
-                return redirect('game:main')
-            elif player.current_node == 29:
-                player.current_node = 291
-                player.save()
-                return redirect('game:main')
-            elif player.current_node == 291:
-                player.current_node = 30
-                player.save()
-                return redirect('game:main')
+            #  REFACTORED: Dictionary mapping prevents code repetition (No more massive elifs)
+            # Format: {current_node: target_node}
+            jump_map = {
+                121: 13, 122: 13,
+                201: 23, 202: 23, 214: 23, 215: 23,
+                203: 21,
+                231: 24, 232: 24,
+                241: 25, 242: 25,
+                25: 251, 251: 26,
+                29: 291, 291: 30
+            }
+            
+            if player.current_node in jump_map:
+                player.current_node = jump_map[player.current_node]
             elif player.current_node >= 33:
                 return redirect('/game/restart/') 
             else:
                 player.current_node += 1
-                player.save()
-                return redirect('game:main')
+                
+            player.save()
+            return redirect('game:main')
                 
         elif action == "ending_dragon":
             player.current_node = 33  
@@ -182,6 +167,10 @@ def main(request):
             player.save()
             return redirect('game:main')
 
+    # Story Node Routing & Context Preparation
+    # Note: For an ambitious project, hardcoding text in views is acceptable 
+    # for rapid prototyping, though ideally moved to DB later.
+    
     node = player.current_node
     active_encounter = player.encounters.filter(status="ACTIVE").first()
 
@@ -657,7 +646,7 @@ def main(request):
     elif node == 29:
         context['game_mode'] = 'story'
         context['story_texts'] = [
-            "Bidding farewell to the merchant, I embarked alone on the final stretch toward the Dragon's Valley. Along the way, I saw the 'signposts' left behind by my predecessors."
+            "Bidding farewell to the merchant, I embarked alone on the final stretch toward the Dragon's Valley. Along the way, I saw the 'signposts' left behind by my predecessors.",
             "They were not signposts at all. They were rusted, shattered swords, cracked crests, and bleached bones half-buried in the volcanic ash. I realized then that I was not the only dragonslayer to reach this place. These skeletons were the remnants of beguiled minds, unfulfilled ambitions, and broken hopes."
         ]
 
@@ -732,6 +721,7 @@ def main(request):
             "I dragged my exhausted body back to the town. This time, there was no superficial honor guard—only the heartfelt cheers and warm tears of the reborn commoners... The spark of hope had finally been rekindled in this era.<br><br><span style='color:goldenrod; font-weight:bold;'>【 TRUE ENDING: Breaking Dawn 】</span><br><br>Your journey is over. Leave a message of guidance for the next Dragonslayer:"
         ]
 
+    # Handle active combat rendering setup
     if context['game_mode'] == 'combat':
         if active_encounter:
             context['active_encounter'] = active_encounter
@@ -740,8 +730,8 @@ def main(request):
         else:
             messages.error(request, "A disturbance in the magical weave occurred. The world has reset.")
             return redirect('/game/restart/')
+            
     context['inventory_items'] = player.inventory.filter(quantity__gt=0)
-
     merchant_nodes = [9, 10, 18, 28]
     context['merchant_present'] = (node in merchant_nodes)
     
@@ -750,19 +740,19 @@ def main(request):
 
 @login_required
 def shop(request):
-
+    """
+    Renders the shop interface.
+    Checks if the player is at a valid merchant node before granting access.
+    """
     player = request.user.playerprofile
-    if player.current_node not in [9, 10, 18, 28]:
+    merchant_nodes = [9, 10, 18, 28]
+    
+    if player.current_node not in merchant_nodes:
         from django.contrib import messages
         messages.error(request, "The merchant is nowhere to be found...")
         return redirect('game:main')
 
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
-
-    merchant_nodes = [9, 10, 18, 28]
-    if profile.current_node not in merchant_nodes:
-        messages.error(request, "The merchant is not nearby. You must survive on your own for now.")
-        return redirect('game:main')
 
     items = Item.objects.all().order_by("price", "name")
     inventory_items = (
@@ -782,12 +772,17 @@ def shop(request):
 
 @login_required
 def buy_item(request, item_id):
+    """
+    Handles item purchasing logic.
+    Deducts coins, prevents duplicate equipment purchases, and updates inventory.
+    """
     if request.method != "POST":
         return redirect("game:shop")
 
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
     item = get_object_or_404(Item, id=item_id)
 
+    # Equipment (weapons/armor) can only be bought once
     if item.type in ["WEAPON", "ARMOUR"]:
         existing_inv = InventoryItem.objects.filter(player=profile, item=item).first()
         if existing_inv and existing_inv.quantity >= 1:
@@ -812,8 +807,13 @@ def buy_item(request, item_id):
     messages.success(request, f"Bought {item.name}!")
     return redirect("game:shop")
 
+
 @login_required
 def character_select(request):
+    """
+    Handles the initial character class selection for the player.
+    Locks the choice once made.
+    """
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
 
     if profile.class_selected:
@@ -837,6 +837,11 @@ def character_select(request):
 
 @login_required
 def perform_attack(request):
+    """
+    Handles AJAX combat requests from the frontend.
+    Calculates player damage, enemy damage, applies item/friend buffs, 
+    and returns a JSON response to dynamically update the UI.
+    """
     if request.method == "POST":
         player = request.user.playerprofile
         
@@ -858,6 +863,7 @@ def perform_attack(request):
         if enemy_type.name.upper() == "WITCH" and action_type == "magic":
             return JsonResponse({"error": "The dark wizard's shadow power suppresses your magic and makes it impossible to cast it!"}, status=400)
 
+        # Calculate passive boosts from inventory
         passive_damage_boost = 0
         passive_defence_boost = 0
         
@@ -875,6 +881,7 @@ def perform_attack(request):
         remaining_qty = None
         used_item_name = None
 
+        # Execute Combat Action
         if action_type == "magic":
             magic_limit_key = f"magic_used_{active_encounter.id}"
             magic_used = request.session.get(magic_limit_key, 0)
@@ -960,6 +967,7 @@ def perform_attack(request):
             player_damage = 0
             log_message = f"You did something unknown... "
 
+        # Apply damage and update status
         active_encounter.enemy_hp -= player_damage
         game_status = "ongoing"
 
@@ -967,6 +975,7 @@ def perform_attack(request):
             
             revive_key = f"zombie_revived_{active_encounter.id}"
             
+            # Special Zombie Mechanic
             if enemy_type.name.upper() == "ZOMBIE" and not request.session.get(revive_key, False):
                 active_encounter.enemy_hp = enemy_type.max_hp // 2  
                 request.session[revive_key] = True  
@@ -1017,20 +1026,25 @@ def perform_attack(request):
     
     return JsonResponse({"error": "Invalid request"}, status=400) 
 
+
 @login_required
 def restart_game(request):
+    """
+    Resets the player's progress when they die or finish the game.
+    Clears encounters and friends, deducts coins, and sends them back to the start.
+    """
     player = request.user.playerprofile
     
     player.hp = 100  
-    
     player.coins = int(player.coins * 0.8) 
     player.current_node = 0  
     player.monsters_defeated = 0
 
     player.save()
+    
+    # Cleanup previous instances
     player.encounters.all().delete()
-    
     player.encounters.filter(status__in=["ACTIVE", "LOST"]).delete()
-    
     player.friends.all().delete()
+    
     return redirect('game:main')
