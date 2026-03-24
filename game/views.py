@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 import random
 import json  
-from .models import PlayerProfile, Encounter, InventoryItem,EnemyType
+from .models import PlayerProfile, Encounter, InventoryItem, EnemyType, FriendType
 from django.shortcuts import render
 from django.shortcuts import redirect
 
@@ -91,6 +91,7 @@ def buy_item(request, item_id):
 
     messages.success(request, f"Bought {item.name}!")
     return redirect("game:shop")
+
 def character_select(request):
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
 
@@ -124,52 +125,95 @@ def perform_attack(request):
 
         enemy_type = active_encounter.enemy_type
         
+        player_damage = 0
+        enemy_damage = enemy_type.damage
+        log_message = ""
+
+        if enemy_type.name.upper() == "WITCH" and action_type == "magic":
+            return JsonResponse({"error": "The dark wizard's shadow power suppresses your magic and makes it impossible to cast it!"}, status=400)
+
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
+            
         elif action_type == "fight":
             player_damage = random.randint(10, 20)
-            log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
+            if enemy_type.name.upper() == "DRAGON":
+                player_damage = player_damage // 2
+                log_message = f"⚔️ The dragon soars into the sky! Your sword barely scratches its hard scales for {player_damage} damage! "
+            else:
+                log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
+                
+        elif action_type == "friend":
+            player_friend = player.friends.filter(is_active=True).select_related("friend").first()
+            
+            if not player_friend:
+                return JsonResponse({"error": "You don't have an active friend equipped!"}, status=400)
+            
+            friend = player_friend.friend 
+            
+            if friend.effect_type == "HEAL":
+                heal_amount = friend.effect_value
+                player.hp = min(100, player.hp + heal_amount)
+                player.hp = max(0, player.hp - enemy_damage)
+                log_message = f"🕊️ {friend.name} heals you for {heal_amount} HP! The {enemy_type.name} hits back for {enemy_damage} damage."
+                
+                game_status = "ongoing"
+                if player.hp <= 0:
+                    active_encounter.status = "LOST"
+                    log_message += f"<br><br>☠️ You have been slain by the {enemy_type.name}..."
+                    game_status = "lost"
+
+                active_encounter.save()
+                player.save()
+
+                return JsonResponse({
+                    "player_hp": player.hp,
+                    "enemy_hp_percent": int((active_encounter.enemy_hp / enemy_type.max_hp) * 100) if enemy_type.max_hp > 0 else 0,
+                    "log_message": log_message,
+                    "game_status": game_status
+                })
+                
+            elif friend.effect_type == "DAMAGE": # Shooter 
+                player_damage = friend.effect_value + random.randint(10, 20)
+                log_message = f"💥 {friend.name} strikes the {enemy_type.name} for {player_damage} damage! "
+                
+            elif friend.effect_type == "SPELL": # Fairy 
+                player_damage = random.randint(25, 40) + (friend.effect_value * 2)
+                log_message = f"✨ {friend.name} casts a powerful spell for {player_damage} damage! "
+                
+            elif friend.effect_type == "DEFENCE": # Hulk 
+                enemy_damage = max(0, enemy_damage - friend.effect_value)
+                player_damage = random.randint(1, 10) 
+                log_message = f"🛡️ {friend.name} toughens you up against incoming attacks for {friend.effect_value} defence! You parried the {enemy_type.name} for {player_damage} damage! "
+                
         else:
             player_damage = 0
             log_message = f"You did something unknown... "
 
-        enemy_damage = enemy_type.damage
-
         active_encounter.enemy_hp -= player_damage
-
         game_status = "ongoing"
 
         if active_encounter.enemy_hp <= 0:
             
-            # Zombie revive
-            if enemy_type.name == "ZOMBIE" and enemy_type.can_revive:
+            revive_key = f"zombie_revived_{active_encounter.id}"
+            
+            if enemy_type.name.upper() == "ZOMBIE" and not request.session.get(revive_key, False):
                 active_encounter.enemy_hp = enemy_type.max_hp // 2 
-                enemy_type.can_revive = False 
-                log_message += f"<br><br>🧟‍♂️ Oh no! The Zombie reanimates from the dead!"
+                request.session[revive_key] = True 
+                
+                log_message += f"<br><br>🧟‍♂️ <i>Just as you were about to breathe a sigh of relief, a bone-chilling sound of skeletal restructuring came from behind... The corpse twitched bizarrely and reanimated from the dead!</i>"
                 game_status = "ongoing"
                 
             else:
                 active_encounter.enemy_hp = 0
                 active_encounter.status = "WON" 
             
-                # Rewards
                 player.monsters_defeated += 1
                 player.coins += enemy_type.reward_coins
             
                 log_message += f"<br><br>✨ Victory! The {enemy_type.name} has been defeated! You earned {enemy_type.reward_coins} coins."
                 game_status = "won"
-            
-                # Dropped item determination
-                if enemy_type.drops_item:
-                    inv_item, created = InventoryItem.objects.get_or_create(
-                        player=player, 
-                        item=enemy_type.drops_item,
-                        defaults={'quantity': 0}
-                    )
-                    inv_item.quantity += 1
-                    inv_item.save()
-                    log_message += f"<br>🎁 Loot! You found a {enemy_type.drops_item.name} and put it in your inventory!"
 
         else:
             player.hp -= enemy_damage
@@ -181,7 +225,6 @@ def perform_attack(request):
                 log_message += f"<br><br>☠️ You have been slain by the {enemy_type.name}..."
                 game_status = "lost"
 
-        #Save
         active_encounter.save()
         player.save()
 
@@ -196,7 +239,7 @@ def perform_attack(request):
             "game_status": game_status
         })
     
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)      
 
 def restart_game(request):
     player = request.user.playerprofile

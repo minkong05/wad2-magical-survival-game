@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
     const enemyHpBar = document.getElementById("enemyHpBar");
+    const friendBtn = document.getElementById("friendBtn");  
     const heroHpText = document.getElementById("heroHpText");
     const battleLog = document.getElementById("battleLog");
 
