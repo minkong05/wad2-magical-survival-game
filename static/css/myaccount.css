@@ -1,0 +1,126 @@
+/* MyAccount page specific styles */
+
+.myaccount-page {
+  max-width: 760px;
+  margin: 1.1rem auto 1.8rem;
+  animation: fadeSlideDown 0.9s ease both;
+}
+
+.myaccount-title {
+  margin: 0 0 1rem;
+  text-align: center;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 5vw, 2.9rem);
+  color: var(--gold-light);
+  letter-spacing: 0.06em;
+  text-shadow:
+    0 0 30px color-mix(in srgb, var(--gold) 55%, transparent),
+    2px 3px 6px color-mix(in srgb, var(--shadow) 90%, transparent);
+}
+
+.myaccount-card {
+  position: relative;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--parchment) 8%, transparent) 0%,
+    color-mix(in srgb, var(--parchment-dark) 5%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  border-radius: 6px;
+  padding: 1.35rem 1.25rem 1.15rem;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gold) 10%, transparent),
+    inset 0 0 40px color-mix(in srgb, var(--shadow) 30%, transparent),
+    0 8px 40px color-mix(in srgb, var(--shadow) 60%, transparent);
+}
+
+.myaccount-card::before,
+.myaccount-card::after {
+  content: '✦';
+  position: absolute;
+  font-size: 1rem;
+  color: var(--gold-dim);
+  line-height: 1;
+}
+
+.myaccount-card::before {
+  top: 10px;
+  left: 14px;
+}
+
+.myaccount-card::after {
+  bottom: 10px;
+  right: 14px;
+}
+
+.myaccount-username {
+  margin: 0 0 0.85rem;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1.05rem, 2.6vw, 1.45rem);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 25%, transparent);
+  padding-bottom: 0.55rem;
+}
+
+.myaccount-profile {
+  display: flex;
+  justify-content: center;
+  margin: 0.4rem 0 1.1rem;
+}
+
+.myaccount-avatar {
+  width: min(100%, 260px);
+  height: auto;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
+  box-shadow:
+    0 0 24px color-mix(in srgb, var(--gold) 18%, transparent),
+    0 10px 28px color-mix(in srgb, var(--shadow) 45%, transparent);
+}
+
+.myaccount-subtitle {
+  margin: 0.2rem 0 0.6rem;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.95rem, 2.2vw, 1.2rem);
+  color: var(--gold-light);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.myaccount-list {
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.myaccount-list-item {
+  position: relative;
+  padding-left: 1.5rem;
+  color: var(--parchment);
+  line-height: 1.5;
+}
+
+.myaccount-list-item::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  color: var(--gold);
+}
+
+@media (max-width: 640px) {
+  .myaccount-page {
+    margin: 0.8rem auto 1.2rem;
+  }
+
+  .myaccount-card {
+    padding: 1.05rem 0.9rem;
+  }
+}

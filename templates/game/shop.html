@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+
+<a href="{% url 'game:main' %}" class="btn btn-outline-dark btn-sm">Back</a>
+
+<h1>Shop</h1>
+<p>Spend your coins to buy items.</p>
+
+<hr>
+
+<h2>Your Coins: {{ profile.coins }}</h2>
+
+{% if items %}
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Type</th>
+        <th>Effect</th>
+        <th>Value</th>
+        <th>Price</th>
+        <th>Buy</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.name }}</td>
+        <td>{{ item.get_type_display }}</td>
+        <td>{{ item.get_effect_display }}</td>
+        <td>{{ item.effect_value }}</td>
+        <td>{{ item.price }}</td>
+        <td>
+          <form method="post" action="{% url 'game:buy_item' item.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-primary">Buy</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No items in shop (did you run population_script.py?)</p>
+{% endif %}
+
+{% endblock %}

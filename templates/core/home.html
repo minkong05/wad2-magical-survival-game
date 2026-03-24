@@ -1,23 +1,39 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block title %}Home{% endblock %}
 
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+
 {% block content %}
-<section>
+<section class="home-hero">
   <h1>Magical Survival Game</h1>
   <p>
     A browser-based fantasy RPG where you choose a Mage or Swordsman, explore the world,
     battle enemies, earn coins, and gear up to defeat the Dragon.
   </p>
 
+    <section class="home-hero__panel">
+      <h2 class="home-hero__heading">How to Play</h2>
 
-</section>
+      <ol class="home-hero__steps">
+        <li>Register an account and log in.</li>
+        <li>Choose your character class: Mage or Swordsman.</li>
+        <li>Explore the world, fight monsters, and earn coins.</li>
+        <li>Use coins to buy better gear and potions.</li>
+        <li>Prepare to face the Dragon and save the realm!</li>
+      </ol>
+    </section>
 
-<hr>
 
-<section>
-  <h2>Quick links</h2>
-  <ul>
-    <li><a href="/AboutUs">About Us</a></li>
-  </ul>
+  <div class="home-hero__actions">
+      <a class="btn-game" href="{% url 'core:main' %}">▶ Start Game</a>
+      <a class="btn-game btn-game--ghost" href="{% url 'game:character_select' %}">Character Select</a>
+    </div>
+
+
 </section>
 {% endblock %}

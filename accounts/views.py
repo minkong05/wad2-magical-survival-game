@@ -16,7 +16,7 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect("home") 
+                return redirect("core:home") 
             else:
                 return render(request, "accounts/login.html", {
                     "error": "Your account is disabled."
@@ -32,39 +32,33 @@ def user_login(request):
     
 
 def user_register(request):
-    registered = False
-
     if request.method == "POST":
         user_form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
 
         if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save()
-
-
+            user = user_form.save(commit=False)
+            
+            if 'password' in user_form.cleaned_data:
+                user.set_password(user_form.cleaned_data['password'])
+            
+            user.save() 
             profile = profile_form.save(commit=False)
             profile.user = user
-
-            if "picture" in request.FILES:
-                profile.picture = request.FILES["picture"]
-
             profile.save()
 
-            registered = True
-            return redirect("home") 
+            return redirect("core:home") 
         else:
-            print(user_form.errors, profile_form.errors)
+            print("User errors:", user_form.errors)
+            print("Profile errors:", profile_form.errors)
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    return render(request, "accounts/register.html",
-        {
-            "user_form": user_form,
-            "profile_form": profile_form,
-            "registered": registered,
-        },
-    )
+    return render(request, "accounts/register.html", {
+        "user_form": user_form,
+        "profile_form": profile_form,
+    })
 
 @login_required
 def myaccount(request):
@@ -73,4 +67,4 @@ def myaccount(request):
 
 def user_logout(request):
     logout(request)
-    return redirect("home") 
+    return redirect("core:home") 

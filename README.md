@@ -52,4 +52,3 @@ git push
 ## Open a Pull Request back into dve on GitHub when it's ready:
 - base: dev
 - compare: feature/<task>
-

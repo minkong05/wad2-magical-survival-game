@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* Shared design tokens for all non-main pages */
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8c96a;
+  --gold-dim: #7a5e28;
+  --ember: #b84c1a;
+  --parchment: #f0e6cc;
+  --parchment-dark: #d4c4a0;
+  --ink: #1a1208;
+  --shadow: #181512;
+  --stone: #2a2218;
+  --stone-light: #3d3226;
+  --fog: rgba(200, 175, 120, 0.08);
+}
+
+/* Background layer used by pages that include background.css */
+body {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    var(--ink) 0%,
+    color-mix(in srgb, var(--stone) 78%, var(--ink)) 25%,
+    color-mix(in srgb, var(--shadow) 40%, var(--ink)) 55%,
+    color-mix(in srgb, var(--shadow) 82%, black) 100%
+  );
+}
+
+main {
+  font-family: 'Crimson Text', Georgia, serif;
+  color: var(--parchment);
+}
+
+/* Floating ember particles */
+main::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(10px 10px at 15% 20%, color-mix(in srgb, var(--gold) 60%, transparent), transparent),
+    radial-gradient(2px 2px at 35% 60%, color-mix(in srgb, var(--gold) 40%, transparent), transparent),
+    radial-gradient(10px 10px at 55% 35%, color-mix(in srgb, var(--gold) 50%, transparent), transparent),
+    radial-gradient(20px 20px at 75% 75%, color-mix(in srgb, var(--gold) 30%, transparent), transparent),
+    radial-gradient(10px 10px at 88% 15%, color-mix(in srgb, var(--gold) 50%, transparent), transparent),
+    radial-gradient(10px 10px at 25% 85%, color-mix(in srgb, var(--ember) 50%, transparent), transparent),
+    radial-gradient(2px 2px at 65% 90%, color-mix(in srgb, var(--ember) 40%, transparent), transparent),
+    radial-gradient(10px 10px at 92% 50%, color-mix(in srgb, var(--gold) 40%, transparent), transparent);
+  animation: drift 4s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Shared fantasy components */
+.home-hero__panel,
+.aboutus-section-inner,
+.class-select {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--parchment) 8%, transparent) 0%,
+    color-mix(in srgb, var(--parchment-dark) 5%, transparent) 100%
+  );
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--gold) 10%, transparent),
+    inset 0 0 40px color-mix(in srgb, var(--shadow) 30%, transparent),
+    0 8px 40px color-mix(in srgb, var(--shadow) 60%, transparent);
+}
+
+.home-hero > h1,
+.aboutus-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 5vw, 3.4rem);
+  font-weight: 900;
+  color: var(--gold-light);
+  text-align: center;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  margin-bottom: 0.4em;
+  text-shadow:
+    0 0 40px color-mix(in srgb, var(--gold) 70%, transparent),
+    0 0 80px color-mix(in srgb, var(--gold) 30%, transparent),
+    2px 3px 6px color-mix(in srgb, var(--shadow) 90%, transparent);
+  animation: titleGlow 3s ease-in-out infinite alternate, fadeSlideDown 0.9s ease both;
+}
+
+.home-hero > h1::after,
+.aboutus-title::after {
+  content: '⚔️  🐉  ⚔️';
+  display: block;
+  font-size: 1.3rem;
+  margin-top: 0.3em;
+  letter-spacing: 0.4em;
+  animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+.home-hero__heading,
+.aboutus-subtitle {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1.2rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 25%, transparent);
+  padding-bottom: 0.6rem;
+}
+
+.btn-game {
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.85rem 2.2rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 3px;
+  transition: all 0.25s ease;
+  background: linear-gradient(135deg, var(--gold-dim) 0%, var(--gold-light) 50%, var(--gold-dim) 100%);
+  color: var(--ink);
+  border: 1px solid var(--gold-light);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  box-shadow:
+    0 0 20px color-mix(in srgb, var(--gold) 40%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-game::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 60%
+  );
+  transform: translateX(-100%);
+  transition: transform 0.5s ease;
+}
+
+.btn-game:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 35px color-mix(in srgb, var(--gold) 70%, transparent),
+    0 6px 20px color-mix(in srgb, var(--shadow) 50%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn-game:hover::before {
+  transform: translateX(100%);
+}
+
+.btn-game:active {
+  transform: translateY(0);
+  box-shadow: 0 0 15px color-mix(in srgb, var(--gold) 40%, transparent);
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 0.5;
+  }
+  to {
+    transform: translateY(-18px) scale(1.03);
+    opacity: 1;
+  }
+}
+
+@keyframes titleGlow {
+  from {
+    text-shadow:
+      0 0 30px color-mix(in srgb, var(--gold) 50%, transparent),
+      0 0 60px color-mix(in srgb, var(--gold) 20%, transparent),
+      2px 3px 6px color-mix(in srgb, var(--shadow) 90%, transparent);
+  }
+  to {
+    text-shadow:
+      0 0 60px color-mix(in srgb, var(--gold) 90%, transparent),
+      0 0 120px color-mix(in srgb, var(--gold) 40%, transparent),
+      2px 3px 6px color-mix(in srgb, var(--shadow) 90%, transparent);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
