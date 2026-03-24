@@ -95,6 +95,21 @@ document.addEventListener("DOMContentLoaded", function() {
                 battleLog.scrollTop = battleLog.scrollHeight;
             }
 
+            if (data.used_item_id) {
+                const itemRow = document.getElementById("inv-row-" + data.used_item_id);
+                const itemText = document.getElementById("inv-text-" + data.used_item_id);
+                
+                if (data.remaining_qty > 0) {
+                    if (itemText) {
+                        itemText.innerText = data.used_item_name + " (x" + data.remaining_qty + ")";
+                    }
+                } else {
+                    if (itemRow) {
+                        itemRow.style.display = "none"; 
+                    }
+                }
+            }
+
             if (data.game_status === "won") {
                 if (fightBtn) {
                     fightBtn.innerText = "Continue ➔";
@@ -137,9 +152,19 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    const itemMenu = document.getElementById("itemMenuContainer");
+
     if (itemBtn) {
         itemBtn.addEventListener("click", function() {
-            performAction("item");
+            if (itemMenu) {
+                if (itemMenu.style.display === "none" || itemMenu.style.display === "") {
+                    itemMenu.style.display = "block"; 
+                } else {
+                    itemMenu.style.display = "none";  
+                }
+            } else {
+                console.error("Can't find container.");
+            }
         });
     }
 
@@ -147,6 +172,10 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", function() {
             const itemId = this.getAttribute("data-item-id");
             performAction("item", itemId);
+            
+            if (itemMenu) {
+                itemMenu.style.display = "none";
+            }
         });
     });
 });

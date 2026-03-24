@@ -347,8 +347,32 @@
                 <button id="fightBtn" class="btn btn-danger btn-lg shadow">Fight</button>
                 <button id="friendBtn" class="btn btn-success btn-lg shadow">Friend</button>
                 <button id="magicBtn" class="btn btn-primary btn-lg shadow">Magic</button>
-                <button id="itemBtn" class="btn btn-warning btn-lg shadow">Item</button>
-            </div>
+                
+                <div style="position: relative; width: 100%;">
+                    <button id="itemBtn" class="btn btn-warning btn-lg shadow w-100">Item</button>
+
+                    <div id="itemMenuContainer" style="display: none; position: absolute; right: 110%; bottom: 0; width: 260px; background: rgba(253, 245, 230, 0.98); padding: 15px; border-radius: 8px; border: 2px solid #5c4033; text-align: left; box-shadow: -5px 5px 20px rgba(0,0,0,0.6); z-index: 999;">
+                        
+                        <h6 style="color: #3e2723; border-bottom: 1px dashed #a67c52; padding-bottom: 5px; margin-top:0; font-weight: bold; text-align: center;">Your Bag</h6>
+                        
+                        {% for inv in inventory_items %}
+                        {% if inv.item.type == 'CONSUMABLE' and inv.quantity > 0 %}
+                            <div id="inv-row-{{ inv.item.id }}" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span id="inv-text-{{ inv.item.id }}" style="color: #2b1d14; font-weight: bold; font-size: 0.9em;">{{ inv.item.name }} (x{{ inv.quantity }})</span>
+                                <button class="itemBtn btn btn-sm" data-item-id="{{ inv.item.id }}" style="background-color: #f39c12; color: white; font-weight: bold; padding: 2px 10px; border: none; border-radius: 4px;">
+                                    Use
+                                </button>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                        {% if not inventory_items %}
+                            <p style="text-align: center; color: #775a3a; font-size: 0.85em; font-style: italic; margin-bottom: 0; padding: 10px 0;">No items available.</p>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+                </div>
         </div>
     </div>
 
@@ -359,7 +383,7 @@
         }
     </script>
     
-    <script src="{% static 'js/main.js' %}?v=3"></script>
+    <script src="{% static 'js/main.js' %}?v=4"></script>
     {% endif %}
 
     <form id="nextNodeForm" method="POST" style="display: none;">
