@@ -750,9 +750,11 @@ def perform_attack(request):
         
         try:
             data = json.loads(request.body)
-            action_type = data.get("action_type", "fight") 
         except json.JSONDecodeError:
-            action_type = "fight"
+            data = {}
+
+        action_type = data.get("action_type", "fight")
+        item_id = data.get("item_id")
         
         active_encounter = player.encounters.filter(status="ACTIVE").first()
         
@@ -763,7 +765,11 @@ def perform_attack(request):
 
         if enemy_type.name.upper() == "WITCH" and action_type == "magic":
             return JsonResponse({"error": "The dark wizard's shadow power suppresses your magic and makes it impossible to cast it!"}, status=400)
-            
+
+        player_damage = 0
+        incoming_damage_reduction = 0
+        enemy_damage = max(1, random.randint(max(1, enemy_type.damage - 2), enemy_type.damage + 2))
+
         if action_type == "magic":
             player_damage = random.randint(25, 40)
             log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
@@ -776,6 +782,52 @@ def perform_attack(request):
                 log_message = f"⚔️ The dragon soars into the sky! Your sword barely scratches its hard scales for {player_damage} damage! "
             else:
                 log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
+
+        elif action_type == "friend":
+            player_damage = random.randint(5, 12)
+            heal_amount = random.randint(8, 16)
+            player.hp = min(100, player.hp + heal_amount)
+            log_message = (
+                f"🤝 You call for companion support! Your ally distracts the {enemy_type.name} "
+                f"for {player_damage} damage and restores {heal_amount} HP."
+            )
+
+        elif action_type == "item":
+            inventory_qs = player.inventory.select_related("item").filter(
+                quantity__gt=0,
+                item__type="CONSUMABLE",
+            )
+
+            if item_id:
+                inventory_qs = inventory_qs.filter(item_id=item_id)
+
+            inventory_item = inventory_qs.order_by("-item__effect_value", "item__name").first()
+            if not inventory_item:
+                return JsonResponse({"error": "You do not have any usable consumable item."}, status=400)
+
+            item = inventory_item.item
+            inventory_item.quantity -= 1
+            if inventory_item.quantity > 0:
+                inventory_item.save(update_fields=["quantity"])
+            else:
+                inventory_item.delete()
+
+            if item.effect == "HEAL":
+                heal_amount = item.effect_value
+                player.hp = min(100, player.hp + heal_amount)
+                log_message = f"🧪 You used {item.name} and recovered {heal_amount} HP!"
+            elif item.effect == "DAMAGE_BOOST":
+                player_damage = random.randint(8, 15) + item.effect_value
+                log_message = f"🧪 You used {item.name} and struck for {player_damage} boosted damage!"
+            elif item.effect == "DEFENCE_BOOST":
+                incoming_damage_reduction = item.effect_value
+                log_message = (
+                    f"🧪 You used {item.name}. Incoming damage will be reduced by "
+                    f"{incoming_damage_reduction} this turn."
+                )
+            else:
+                log_message = f"🧪 You used {item.name}, but nothing happened."
+
         else:
             player_damage = 0
             log_message = f"You did something unknown... "
@@ -806,8 +858,12 @@ def perform_attack(request):
                 game_status = "won"
 
         else:
+            enemy_damage = max(0, enemy_damage - incoming_damage_reduction)
             player.hp -= enemy_damage
-            log_message += f"<br>The {enemy_type.name} hit you back for {enemy_damage} damage."
+            if enemy_damage > 0:
+                log_message += f"<br>The {enemy_type.name} hit you back for {enemy_damage} damage."
+            else:
+                log_message += f"<br>The {enemy_type.name}'s attack was fully blocked!"
             
             if player.hp <= 0:
                 player.hp = 0
