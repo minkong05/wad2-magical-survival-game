@@ -11,9 +11,11 @@ from .models import Encounter, EnemyType, Signpost,FriendType, PlayerFriend
 def main(request):
     if not hasattr(request.user, 'playerprofile'):
         PlayerProfile.objects.create(user=request.user)
-        return redirect('/game/restart/')
+        return redirect('game:character_select')
         
     player = request.user.playerprofile
+    if not player.class_selected:
+        return redirect('game:character_select')
     
     if request.method == "POST":
         action = request.POST.get("action")
@@ -748,10 +750,17 @@ def shop(request):
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
 
     items = Item.objects.all().order_by("price", "name")
+    inventory_items = (
+        profile.inventory
+        .select_related("item")
+        .filter(quantity__gt=0)
+        .order_by("item__name")
+    )
 
     context = {
         "profile": profile,
         "items": items,
+        "inventory_items": inventory_items,
     }
     return render(request, "game/shop.html", context)
 
@@ -782,15 +791,21 @@ def buy_item(request, item_id):
     messages.success(request, f"Bought {item.name}!")
     return redirect("game:shop")
 
+@login_required
 def character_select(request):
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
+
+    if profile.class_selected:
+        messages.info(request, "You already selected your class. This choice is locked.")
+        return redirect("core:main")
 
     if request.method == "POST":
         class_type = request.POST.get("class_type")
 
         if class_type in dict(PlayerProfile.CLASS_CHOICES):
             profile.class_type = class_type
-            profile.save()
+            profile.class_selected = True
+            profile.save(update_fields=["class_type", "class_selected"])
             return redirect("core:main")
 
     return render(request, "game/character_select.html", {
@@ -959,6 +974,7 @@ def perform_attack(request):
     
     return JsonResponse({"error": "Invalid request"}, status=400)      
 
+@login_required
 def restart_game(request):
     player = request.user.playerprofile
     

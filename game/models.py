@@ -9,6 +9,7 @@ class PlayerProfile(models.Model):
     
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     class_type = models.CharField(max_length=20, choices=CLASS_CHOICES, blank=True, default="MAGE")
+    class_selected = models.BooleanField(default=False)
     level = models.PositiveSmallIntegerField(default=1)
     hp = models.PositiveIntegerField(default=100)
     coins = models.PositiveIntegerField(default=0)
@@ -123,5 +124,4 @@ class Signpost(models.Model):
 
     def __str__(self):
         return f"[{self.ending_type}] {self.message}"
-
 

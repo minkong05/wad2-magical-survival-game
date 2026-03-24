@@ -16,7 +16,7 @@
     <div class="myaccount-profile">
       <img
         class="myaccount-avatar"
-        src="{% static 'img/test.jpg' %}"
+        src="{% if user_profile.picture %}{{ user_profile.picture.url }}{% else %}{% static 'img/test.jpg' %}{% endif %}"
         alt="Profile picture"
         width="300"
       >
@@ -24,16 +24,18 @@
 
     <h3 class="myaccount-subtitle">Stats</h3>
     <ul class="myaccount-list">
-      <li class="myaccount-list-item">Level: ( User level )</li>
-      <li class="myaccount-list-item">Recent Quests: ( The last two or three quests completed )</li>
-      <li class="myaccount-list-item">HP: ( Current user hp )</li>
+      <li class="myaccount-list-item">Class: {{ player_profile.get_class_type_display }}</li>
+      <li class="myaccount-list-item">Coins: {{ player_profile.coins }}</li>
+      <li class="myaccount-list-item">HP: {{ player_profile.hp }}</li>
+      <li class="myaccount-list-item">Monsters Defeated: {{ player_profile.monsters_defeated }}</li>
     </ul>
 
-    <h3 class="myaccount-subtitle">Skills Learned</h3>
+    <h3 class="myaccount-subtitle">Companions & Inventory</h3>
     <ul class="myaccount-list">
-      <li class="myaccount-list-item">( User skill )</li>
-      <li class="myaccount-list-item">( Another user skill )</li>
-      <li class="myaccount-list-item">( Third user skill )</li>
+      <li class="myaccount-list-item">Active Companion: {{ active_companion_name }}</li>
+      <li class="myaccount-list-item">Companions Unlocked: {{ learned_skills|join:", "|default:"None yet" }}</li>
+      <li class="myaccount-list-item">Total Items Carried: {{ total_inventory_items }}</li>
+      <li class="myaccount-list-item">Unique Item Types: {{ unique_inventory_items }}</li>
     </ul>
   </section>
 </section>

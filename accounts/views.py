@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 
 from .forms import UserForm, UserProfileForm
+from .models import UserProfile
+from game.models import PlayerProfile
 
 def user_login(request):
 
@@ -16,7 +19,10 @@ def user_login(request):
         if user:
             if user.is_active:
                 login(request, user)
-                return redirect("core:home") 
+                profile, _ = PlayerProfile.objects.get_or_create(user=user)
+                if not profile.class_selected:
+                    return redirect("game:character_select")
+                return redirect("core:main")
             else:
                 return render(request, "accounts/login.html", {
                     "error": "Your account is disabled."
@@ -62,7 +68,38 @@ def user_register(request):
 
 @login_required
 def myaccount(request):
-    return render(request, "accounts/myaccount.html")
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    player_profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
+
+    learned_skills = list(
+        player_profile.friends
+        .select_related("friend")
+        .order_by("-unlocked_at")
+        .values_list("friend__name", flat=True)[:3]
+    )
+
+    active_companion = (
+        player_profile.friends
+        .select_related("friend")
+        .filter(is_active=True)
+        .first()
+    )
+    inventory_totals = player_profile.inventory.aggregate(total_quantity=Sum("quantity"))
+    total_inventory_items = inventory_totals["total_quantity"] or 0
+    unique_inventory_items = player_profile.inventory.filter(quantity__gt=0).count()
+
+    return render(
+        request,
+        "accounts/myaccount.html",
+        {
+            "user_profile": user_profile,
+            "player_profile": player_profile,
+            "learned_skills": learned_skills,
+            "active_companion_name": active_companion.friend.name if active_companion else "None",
+            "total_inventory_items": total_inventory_items,
+            "unique_inventory_items": unique_inventory_items,
+        },
+    )
 
 
 def user_logout(request):
