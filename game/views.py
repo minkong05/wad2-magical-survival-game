@@ -5,7 +5,7 @@ from .models import InventoryItem, Item, PlayerProfile
 from django.http import JsonResponse
 import random
 import json  
-from .models import Encounter, EnemyType, Signpost
+from .models import Encounter, EnemyType, Signpost,FriendType, PlayerFriend
 
 @login_required
 def main(request):
@@ -91,6 +91,12 @@ def main(request):
         elif action == "giant_opt2":
             player.current_node = 122
             player.save()
+            
+            friend_obj, _ = FriendType.objects.get_or_create(name="Hulk", defaults={"effect_type": "DAMAGE", "effect_value": 15})
+            pf, _ = PlayerFriend.objects.get_or_create(player=player, friend=friend_obj)
+            pf.is_active = True
+            pf.save()
+            
             return redirect('game:main')
 
         elif action == "guard_opt1":
@@ -110,6 +116,12 @@ def main(request):
             player.current_node = 203
             request.session['visited_village'] = True 
             player.save()
+            
+            friend_obj, _ = FriendType.objects.get_or_create(name="Shooter", defaults={"effect_type": "DAMAGE", "effect_value": 10})
+            pf, _ = PlayerFriend.objects.get_or_create(player=player, friend=friend_obj)
+            pf.is_active = True
+            pf.save()
+            
             return redirect('game:main')
 
         elif action == "hunter_opt1":
@@ -132,6 +144,10 @@ def main(request):
             player.current_node = 242
             player.hp = min(player.hp + 20, 100) 
             player.save()
+            friend_obj, _ = FriendType.objects.get_or_create(name="Fairy", defaults={"effect_type": "HEAL", "effect_value": 25})
+            pf, _ = PlayerFriend.objects.get_or_create(player=player, friend=friend_obj)
+            pf.is_active = True
+            pf.save()
             return redirect('game:main')
         
         elif action == "leave_signpost":
@@ -152,6 +168,11 @@ def main(request):
                 player.current_node = 213
             elif player.current_node == 213 and answer == "hope":
                 player.current_node = 214
+                
+                friend_obj, _ = FriendType.objects.get_or_create(name="Phoenix", defaults={"effect_type": "HEAL", "effect_value": 20})
+                pf, _ = PlayerFriend.objects.get_or_create(player=player, friend=friend_obj)
+                pf.is_active = True
+                pf.save()
             else:
                 player.current_node = 215
                 player.coins += 10
@@ -819,13 +840,29 @@ def perform_attack(request):
                 log_message = f"⚔️ You bravely slashed the {enemy_type.name} for {player_damage} damage! "
 
         elif action_type == "friend":
-            player_damage = random.randint(5, 12)
-            heal_amount = random.randint(8, 16)
-            player.hp = min(100, player.hp + heal_amount)
-            log_message = (
-                f"🤝 You call for companion support! Your ally distracts the {enemy_type.name} "
-                f"for {player_damage} damage and restores {heal_amount} HP."
-            )
+            if enemy_type.name.upper() != "DRAGON":
+                player_damage = 0
+                log_message = "🛡️ Your allies are saving their strength for the final battle. You must face this enemy alone!"
+            else:
+                active_friend = player.friends.filter(is_active=True).first()
+
+                if not active_friend:
+                    player_damage = 0
+                    log_message = "🤝 You called out for help, but no one answered. You are completely alone... or your allies have already exhausted their strength."
+                else:
+                    player_damage = random.randint(5, 12)
+                    heal_amount = random.randint(8, 16)
+                    player.hp = min(100, player.hp + heal_amount)
+                    
+                    friend_name = active_friend.friend.name
+                    
+                    log_message = (
+                        f"🤝 {friend_name} steps forward to fulfill the oath! They distract the {enemy_type.name} "
+                        f"for {player_damage} damage, restore {heal_amount} of your HP, and then retreat exhausted!"
+                    )
+                    
+                    active_friend.is_active = False
+                    active_friend.save()
 
         elif action_type == "item":
             inventory_qs = player.inventory.select_related("item").filter(
@@ -936,5 +973,5 @@ def restart_game(request):
     
     player.encounters.filter(status__in=["ACTIVE", "LOST"]).delete()
     
-    
+    player.friends.all().delete()
     return redirect('game:main')
