@@ -669,7 +669,7 @@ def main(request):
         if signposts.exists():
             messages_text = "I crouched down and wiped the volcanic ash from the cracked stones. I could barely make out the bloodstained final words left by the predecessors:<br>"
             for sp in signposts:
-                messages_text += f"<br><span style='color: #d3d3d3; font-style: italic;'>「 {sp.message} 」</span>"
+                messages_text += f"<br><span style='color: #f8f9fa; font-style: italic; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,1), -1px -1px 2px rgba(0,0,0,0.8);'>「 {sp.message} 」</span>"
         else:
             messages_text = "<span style='color: #8b8b83; font-style: italic;'>The wind and snow had completely erased any text on the stones. I could read nothing.</span>"
 
@@ -774,6 +774,12 @@ def buy_item(request, item_id):
     profile, _ = PlayerProfile.objects.get_or_create(user=request.user)
     item = get_object_or_404(Item, id=item_id)
 
+    if item.type in ["WEAPON", "ARMOUR"]:
+        existing_inv = InventoryItem.objects.filter(player=profile, item=item).first()
+        if existing_inv and existing_inv.quantity >= 1:
+            messages.error(request, f"You already own the {item.name}! Equipment cannot be purchased twice.")
+            return redirect("game:shop")
+
     if profile.coins < item.price:
         messages.error(request, "Not enough coins.")
         return redirect("game:shop")
@@ -856,8 +862,17 @@ def perform_attack(request):
         used_item_name = None
 
         if action_type == "magic":
+            magic_limit_key = f"magic_used_{active_encounter.id}"
+            magic_used = request.session.get(magic_limit_key, 0)
+            
+            if magic_used >= 2:
+                return JsonResponse({"error": "Your mana is depleted! You can only use magic 3 times per battle."}, status=400)
+                
+            request.session[magic_limit_key] = magic_used + 1
+            
             player_damage = random.randint(25, 40)
-            log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! "
+            magic_left = 3 - request.session[magic_limit_key]
+            log_message = f"🔥 You cast a blazing FIREBALL at the {enemy_type.name} for {player_damage} damage! (Magic left: {magic_left})"
             
         elif action_type == "fight":
             player_damage = random.randint(10, 20) + passive_damage_boost
