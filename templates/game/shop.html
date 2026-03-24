@@ -1,50 +1,92 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Shop{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/shop.css' %}">
+{% endblock %}
+
 {% block content %}
+<section class="shop-page">
+  <div class="shop-topbar">
+    <a href="{% url 'game:main' %}" class="shop-back-btn">Back to Adventure</a>
+    <p class="shop-coins">Your Coins: <span>{{ profile.coins }}</span></p>
+  </div>
 
-<a href="{% url 'game:main' %}" class="btn btn-outline-dark btn-sm">Back</a>
+  <h1 class="shop-title">Merchant's Shop</h1>
+  <p class="shop-subtitle">Spend your coins wisely and prepare for the next battle.</p>
 
-<h1>Shop</h1>
-<p>Spend your coins to buy items.</p>
+  <div class="shop-panels">
+    <section class="shop-card">
+      <h2 class="shop-section-title">Your Inventory</h2>
+      {% if inventory_items %}
+        <table class="shop-table">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Type</th>
+              <th>Quantity</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for inv in inventory_items %}
+            <tr>
+              <td>{{ inv.item.name }}</td>
+              <td>{{ inv.item.get_type_display }}</td>
+              <td>{{ inv.quantity }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% else %}
+        <p class="shop-empty">You do not have any items yet.</p>
+      {% endif %}
+    </section>
 
-<hr>
-
-<h2>Your Coins: {{ profile.coins }}</h2>
-
-{% if items %}
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Item</th>
-        <th>Type</th>
-        <th>Effect</th>
-        <th>Value</th>
-        <th>Price</th>
-        <th>Buy</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for item in items %}
-      <tr>
-        <td>{{ item.name }}</td>
-        <td>{{ item.get_type_display }}</td>
-        <td>{{ item.get_effect_display }}</td>
-        <td>{{ item.effect_value }}</td>
-        <td>{{ item.price }}</td>
-        <td>
-          <form method="post" action="{% url 'game:buy_item' item.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-sm btn-primary">Buy</button>
-          </form>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% else %}
-  <p>No items in shop (did you run population_script.py?)</p>
-{% endif %}
+    <section class="shop-card shop-card-wide">
+      <h2 class="shop-section-title">Shop Items</h2>
+      {% if items %}
+      <table class="shop-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Type</th>
+            <th>Effect</th>
+            <th>Value</th>
+            <th>Price</th>
+            <th>Buy</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.name }}</td>
+            <td>{{ item.get_type_display }}</td>
+            <td>{{ item.get_effect_display }}</td>
+            <td>{{ item.effect_value }}</td>
+            <td>{{ item.price }}</td>
+            <td>
+              <form method="post" action="{% url 'game:buy_item' item.id %}">
+                {% csrf_token %}
+                <button
+                  type="submit"
+                  class="shop-buy-btn"
+                  {% if profile.coins < item.price %}disabled{% endif %}
+                >
+                  {% if profile.coins < item.price %}Not enough coins{% else %}Buy{% endif %}
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <p class="shop-empty">No items in shop (did you run population_script.py?)</p>
+      {% endif %}
+    </section>
+  </div>
+</section>
 
 {% endblock %}
