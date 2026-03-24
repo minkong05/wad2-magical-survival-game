@@ -24,7 +24,11 @@
             </h4>
         </div>
         <div class="col-md-6 text-end">
-            <a href="{% url 'game:shop' %}" class="fantasy-btn me-2">Shop</a>
+            {% if merchant_present %}
+                <a href="{% url 'game:shop' %}" class="fantasy-btn me-2">Shop</a>
+            {% else %}
+                <a href="{% url 'game:shop' %}" class="fantasy-btn me-2" style="filter: grayscale(100%); opacity: 0.6; cursor: not-allowed;">Shop</a>
+            {% endif %}
         </div>
     </div>
 

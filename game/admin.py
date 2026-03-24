@@ -1,7 +1,7 @@
 # game/admin.py
 from django.contrib import admin
 from .models import EnemyType, Item, FriendType
-from .models import PlayerProfile, InventoryItem, PlayerFriend, Encounter
+from .models import PlayerProfile, InventoryItem, PlayerFriend, Encounter, Signpost
 
 
 admin.site.register(Item)
@@ -19,3 +19,9 @@ class EnemyTypeAdmin(admin.ModelAdmin):
     list_filter = ("level", "is_boss")
     search_fields = ("name",)
     ordering = ("level", "name")
+
+@admin.register(Signpost)
+class SignpostAdmin(admin.ModelAdmin):
+    list_display = ('message', 'ending_type')
+    list_filter = ('ending_type',)
+    search_fields = ('message',)
