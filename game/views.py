@@ -780,10 +780,7 @@ def perform_attack(request):
             player_damage = 0
             log_message = f"You did something unknown... "
 
-        enemy_damage = enemy_type.damage
-
         active_encounter.enemy_hp -= player_damage
-
         game_status = "ongoing"
 
         if active_encounter.enemy_hp <= 0:
@@ -832,7 +829,7 @@ def perform_attack(request):
             "game_status": game_status
         })
     
-    return JsonResponse({"error": "Invalid request"}, status=400)
+    return JsonResponse({"error": "Invalid request"}, status=400)      
 
 def restart_game(request):
     player = request.user.playerprofile
