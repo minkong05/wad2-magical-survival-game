@@ -26,7 +26,7 @@
 * **Turn-Based Encounters:** Engage with various enemies (Skulls, Zombies, Witches) and face the ultimate Dragon Boss.
 * **Strategic Resource Management:** * Limited Magic: Magic spells are restricted to **only 3 uses per entire game run**, requiring careful tactical planning.
   * Companion System: Recruit allies (Phoenix, Shooter, Fairy, Hulk) with unique passive buffs (Heal, Damage, Spell, Defence).
-* **Merchant Shop:** Spend hard-earned coins to purchase vital supplies (HP Drinks, Phoenix Food) and equipment upgrades.
+* **Merchant Shop:** Spend hard-earned coins to purchase vital supplies (HP Drinks, Phoenix Food) and equipment upgrades.**Shop will only be opened when the player meet the merchant, please pay attention when you meet the merchant**.
 
 ### 📖 Interactive Narrative
 * **Branching Storylines:** Text-based exploration with crucial decision-making nodes that alter the outcome.
