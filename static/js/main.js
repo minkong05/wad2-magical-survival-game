@@ -1,3 +1,15 @@
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
+history.pushState(null, null, location.href);
+window.addEventListener('popstate', function () {
+    history.pushState(null, null, location.href);
+});
+
+
 document.addEventListener("DOMContentLoaded", function() {
     const fightBtn = document.getElementById("fightBtn");
     const magicBtn = document.getElementById("magicBtn");
@@ -34,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     document.addEventListener('keydown', function(event) {
+        if (event.target.tagName.toLowerCase() === 'input') {
+            return; 
+        }
         const interactiveDataEl = document.getElementById('choicesData');
         const decisionForm = document.getElementById('decisionForm');
         const nextNodeForm = document.getElementById('nextNodeForm');
