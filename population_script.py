@@ -10,10 +10,10 @@ def main():
 
     enemies = [
         # name, level, max_hp, damage, reward_coins, is_boss
-        ("Skull", 1, 20, 2, 5, False),
-        ("Zombie", 2, 35, 4, 10, False),
-        ("Witch", 3, 50, 6, 20, False),
-        ("Dragon", 4, 120, 12, 100, True),
+        ("Skull", 1, 30, 6, 20, False),
+        ("Zombie", 2, 45, 8, 40, False),
+        ("Witch", 3, 85, 12, 60, False),
+        ("Dragon", 4, 120, 18, 100, True),
     ]
 
     for name, level, max_hp, damage, reward_coins, is_boss in enemies:

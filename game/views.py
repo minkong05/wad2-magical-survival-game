@@ -149,11 +149,11 @@ def main(request):
         elif action == "submit_riddle":
             answer = request.POST.get("riddle_answer", "").strip().lower()
             
-            if player.current_node == 21 and answer == "fear":
+            if player.current_node == 21 and answer in ["fear"]:
                 player.current_node = 212
-            elif player.current_node == 212 and answer == "death":
+            elif player.current_node == 212 and answer in ["death"]:
                 player.current_node = 213
-            elif player.current_node == 213 and answer == "hope":
+            elif player.current_node == 213 and answer in ["hope"]:
                 player.current_node = 214
                 
                 friend_obj, _ = FriendType.objects.get_or_create(name="Phoenix", defaults={"effect_type": "HEAL", "effect_value": 20})
@@ -162,7 +162,7 @@ def main(request):
                 pf.save()
             else:
                 player.current_node = 215
-                player.coins += 10
+                player.coins += 10 
                 
             player.save()
             return redirect('game:main')
@@ -886,7 +886,7 @@ def perform_attack(request):
             magic_limit_key = f"magic_used_{active_encounter.id}"
             magic_used = request.session.get(magic_limit_key, 0)
             
-            if magic_used >= 2:
+            if magic_used >= 3:
                 return JsonResponse({"error": "Your mana is depleted! You can only use magic 3 times per battle."}, status=400)
                 
             request.session[magic_limit_key] = magic_used + 1
@@ -1031,20 +1031,20 @@ def perform_attack(request):
 def restart_game(request):
     """
     Resets the player's progress when they die or finish the game.
-    Clears encounters and friends, deducts coins, and sends them back to the start.
+    Clears encounters, friends, and inventory, deducts 20 coins, and sends them back to the start.
     """
     player = request.user.playerprofile
     
     player.hp = 100  
-    player.coins = int(player.coins * 0.8) 
     player.current_node = 0  
     player.monsters_defeated = 0
 
+    player.coins = max(0, player.coins - 20) 
+
     player.save()
     
-    # Cleanup previous instances
-    player.encounters.all().delete()
-    player.encounters.filter(status__in=["ACTIVE", "LOST"]).delete()
-    player.friends.all().delete()
+    player.encounters.all().delete() 
+    player.friends.all().delete()   
+    player.inventory.all().delete()  
     
     return redirect('game:main')

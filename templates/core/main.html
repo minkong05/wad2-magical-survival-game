@@ -248,7 +248,10 @@
         <div class="col-md-6 center-panel">
             <div id="battleLog" class="mt-2 elegant-story-box" style="height: 400px; overflow-y: auto;">
                 <p id="logText" class="mt-3 fs-5" style="color: #333; line-height: 1.6;">
-                    A wild {{ active_encounter.enemy_type.name }} appears!
+                    A wild <strong>{{ active_encounter.enemy_type.name }}</strong> appears!<br>
+                    <span style="font-size: 0.85em; color: #8B0000; font-weight: bold;">
+                        [ Max HP: {{ active_encounter.enemy_type.max_hp }} | Base Attack: {{ active_encounter.enemy_type.damage }} ]
+                    </span>
                 </p>
             </div>
         </div>
@@ -300,8 +303,6 @@
         <input type="hidden" name="action" value="next_node">
     </form>
 
-    <script src="{% static 'js/main.js' %}?v=12"></script>
+    <script src="{% static 'js/main.js' %}?v=15"></script>
 </div>
 {% endblock %}
-
-
