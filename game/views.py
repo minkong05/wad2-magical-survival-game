@@ -886,7 +886,7 @@ def perform_attack(request):
             magic_limit_key = f"magic_used_{active_encounter.id}"
             magic_used = request.session.get(magic_limit_key, 0)
             
-            if magic_used >= 2:
+            if magic_used >= 3:
                 return JsonResponse({"error": "Your mana is depleted! You can only use magic 3 times per battle."}, status=400)
                 
             request.session[magic_limit_key] = magic_used + 1
