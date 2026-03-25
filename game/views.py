@@ -883,7 +883,7 @@ def perform_attack(request):
 
         # Execute Combat Action
         if action_type == "magic":
-            magic_limit_key = f"magic_used_{active_encounter.id}"
+            magic_limit_key = "global_magic_used"
             magic_used = request.session.get(magic_limit_key, 0)
             
             if magic_used >= 3:
@@ -1045,6 +1045,9 @@ def restart_game(request):
     
     player.encounters.all().delete() 
     player.friends.all().delete()   
-    player.inventory.all().delete()  
+    player.inventory.all().delete()
+
+    if "global_magic_used" in request.session:
+        del request.session["global_magic_used"]
     
     return redirect('game:main')
