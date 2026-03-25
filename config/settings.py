@@ -129,3 +129,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # Auth redirects
 LOGIN_URL = "/login/"
 LOGIN_REDIRECT_URL = "/main/"
+ALLOWED_HOSTS = ['marchhare.pythonanywhere.com', '127.0.0.1', 'localhost']
