@@ -52,6 +52,18 @@ Play the live version here: **[https://marchhare.pythonanywhere.com](https://mar
 ---
 
 ## 📷 Screenshot
+![1856bf8ef3e936f2ed7e4a24e5d4e7df](https://github.com/user-attachments/assets/566cbe64-0990-4b2d-b1d0-f8b2c6f67794)
+![51fa30d6c901e741e876dab371c3544d](https://github.com/user-attachments/assets/48e90f60-8245-405a-a56e-eab49420c52b)
+![c3db336c2c4cd1cbb768c13416bd3b2d](https://github.com/user-attachments/assets/f0fb2602-a469-44b4-83b7-0a7506dd28dd)
+![20f329df8f603503fe5a1ae347879f58](https://github.com/user-attachments/assets/fa5ac270-3a6a-43bc-ae5c-d144b52b4fe9)
+![74822b265855d57a3621e8f22cd1a4e1](https://github.com/user-attachments/assets/d2fc8376-b92f-4393-b670-3fd714a1d96a)
+![6714e54e29066456e15f76d761535df4](https://github.com/user-attachments/assets/3250c27b-49f5-4534-a2db-3d45368b3d31)
+
+
+
+
+
+
 
 
 
@@ -89,30 +101,41 @@ python population_script.py
 # Start the server
 python manage.py runserver
 
-Access the game at: `http://127.0.0.1:8000/`
+```
+
+
+Access the game at: http://127.0.0.1:8000/
 
 ---
 
 ## 🎨 About Arts & External Resources
-
 To comply with academic integrity, we acknowledge the following external resources:
 
-* **Visual Assets (Pixel Art):** The character, enemy, and NPC sprites were sourced from free-to-use assets on [OpenGameArt.org](https://opengameart.org/) and some of them are painted by our team member March Hare.
-* **UI Framework:** [Bootstrap v5.3.2](https://getbootstrap.com/) for responsive grid layouts.
-* **Storyline & World-building:** All core narratives, NPC dialogues, and riddles are 100% original, written and designed by our team member March Hare.
+Visual Assets (Pixel Art): The character, enemy, and NPC sprites were sourced from free-to-use assets on OpenGameArt.org and some of them are painted by our team member March Hare.
+
+UI Framework: Bootstrap v5.3.2 for responsive grid layouts.
+
+Storyline & World-building: All core narratives, NPC dialogues, and riddles are 100% original, written and designed by our team member March Hare.
 
 ---
 
 ## 🙏 Special Thanks
-
 To those who supported the development of this project, played our early buggy builds, and helped us balance the dark-fantasy difficulty:
 
-iloveneosoulindeed
-Law
-Butterfly
-Mr.Unicorn
-December
-Lin
-AIN
-Scatlett
-wikry
+* iloveneosoulindeed
+
+* Law
+
+* Butterfly
+
+* Mr.Unicorn
+
+* December
+
+* Lin
+
+* AIN
+
+* Scatlett
+
+* wikry
