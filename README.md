@@ -75,7 +75,7 @@ To run this game on your local machine, follow these steps:
 
 ```bash
 # Clone the repository
-git clone [https://github.com/minkong05/wad2-magical-survival-game.git](https://github.com/minkong05/wad2-magical-survival-game.git)
+git clone https://github.com/minkong05/wad2-magical-survival-game.git
 
 # Navigate to the project folder
 cd wad2-magical-survival-game
